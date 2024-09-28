@@ -1,18 +1,16 @@
-import {BrowserRouter ,Routes, Route} from 'react-router-dom'
-import Login from './pages/Login'
-import Register from './pages/register'
-function App() {
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Login from './pages/Login';
+import Usuarios from './pages/Users';
 
+function App() {
   return (
     <BrowserRouter>
-    <Routes>
-      <Route path='/*' element={<Login/>}>
-        <Route path='register' element={<Register/>}></Route>
-      </Route>
-    </Routes>
-
+      <Routes>
+        <Route path='/' element={<Login />} />
+        <Route path='/users' element={<Usuarios />} />
+      </Routes>
     </BrowserRouter>
-  )    
+  );
 }
 
-export default App
+export default App;
