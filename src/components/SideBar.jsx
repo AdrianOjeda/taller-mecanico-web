@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import CloseIcon from '@mui/icons-material/Close';
 import SwitchTheme from "./SwitchTheme";
-
+import ExitToApp from "@mui/icons-material/ExitToApp";
+import { useNavigate } from "react-router-dom";
 function SideBar() {
     const [isOpen, setIsOpen] = useState(false);
-
+    const navigate = useNavigate();
     const openSideBar = () => {
         setIsOpen(true);
     };
@@ -15,7 +16,7 @@ function SideBar() {
     };
 
     const handleResize = () => {
-        if (window.innerWidth >= 768) {
+        if (window.innerWidth >= 1024) {
             closeSideBar(); 
         }
     };
@@ -30,12 +31,12 @@ function SideBar() {
 
     return (
         <>
-            <header className=" block">
+            <header className="block">
                 <button
-                aria-controls="default-sidebar"
-                type="button"
-                class="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg sm:hidden bg-zinc-300 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-                onClick={openSideBar}
+                    aria-controls="default-sidebar"
+                    type="button"
+                    className="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg lg:hidden bg-zinc-300 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+                    onClick={openSideBar}
                 >
                     <span className="sr-only">Open sidebar</span>
                     <svg className="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -44,16 +45,15 @@ function SideBar() {
                 </button>
             </header>
             
-
             <aside
-                class={`fixed top-0 left-0 z-40 sm:w-56 h-screen transition-transform w-3/4  ${
+                className={`fixed top-0 left-0 z-50 sm:w-56 h-screen transition-transform w-3/4 bg-gray-50 dark:bg-gray-900 ${
                     isOpen ? "translate-x-0" : "-translate-x-full"
-                } sm:translate-x-0`}
+                } lg:translate-x-0`}
             >
-                <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-900">
+                <div className="h-full px-3 py-4 overflow-y-auto">
                     <ul className="space-y-2 font-medium">
                         {isOpen && (
-                            <li className=" justify-end sm:hidden flex">
+                            <li className="justify-end lg:hidden flex">
                                 <CloseIcon
                                     onClick={closeSideBar}
                                     className="text-dark hover:text-red-700 w-7 h-7 cursor-pointer dark:text-white justify-end"
@@ -61,9 +61,16 @@ function SideBar() {
                             </li>
                         )}
 
-                        <li className=" dark:text-white flex items-center">
+                        <li className="dark:text-white flex items-center">
                             <h1>Modo oscuro</h1>
-                            <SwitchTheme/>
+                            <SwitchTheme />
+                            <ExitToApp onClick={()=>{
+
+
+                                navigate('/', {
+                                    replace: true,
+                                });
+                            }}/>
                         </li>
 
                         <li>
@@ -71,7 +78,6 @@ function SideBar() {
                                 <span className="ms-3">Usuarios</span>
                             </Link>
                         </li>
-                        
                     </ul>
                 </div>
             </aside>
