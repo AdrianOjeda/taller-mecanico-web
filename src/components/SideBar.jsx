@@ -78,6 +78,26 @@ function SideBar() {
                                 <span className="ms-3">Usuarios</span>
                             </Link>
                         </li>
+                        <li>
+                            <Link to='/customers' className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                                <span className="ms-3">Clientes</span>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to='/vehicles' className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                                <span className="ms-3">Vehiculos</span>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to='/repairs' className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                                <span className="ms-3">Reparaciones</span>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to='/spareparts' className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                                <span className="ms-3">Piezas</span>
+                            </Link>
+                        </li>
                     </ul>
                 </div>
             </aside>

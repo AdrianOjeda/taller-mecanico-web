@@ -11,7 +11,7 @@ function Users() {
 
             <main className="flex-grow p-1 relative z-10">
                 <div >
-                    <div className=" p-2 text-5xl dark:text-white font-medium">
+                    <div className="text-5xl dark:text-white font-medium text-center">
                         <h1>Crear usuario</h1>
                     </div>
                     <UserForm/>
