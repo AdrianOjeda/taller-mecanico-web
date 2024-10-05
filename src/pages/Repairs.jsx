@@ -4,7 +4,7 @@ import SideBar from "../components/SideBar";
 function Repairs() {
     return (
         <div className="dark:bg-azulBg bg-slate-300 h-auto w-screen lg:flex">
-             <div className="w-auto lg:w-56 relative">
+            <div className="w-auto lg:w-56 relative">
                 <SideBar />
             </div>
             

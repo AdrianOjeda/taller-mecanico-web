@@ -5,12 +5,12 @@ import { useNavigate } from "react-router-dom";
 function UserForm() {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
-        user: '',
-        password: '',
-        name: '',
-        lastName: '',
-        phone: '',
-        address: '',
+        username: '',
+        contraseña: '',
+        nombre: '',
+        apellidos: '',
+        telefono: '',
+        direccion: '',
         rol: ''
     });
 
@@ -24,12 +24,12 @@ function UserForm() {
         });
 
         setFormData({
-            user: '',
-            password: '',
-            name: '',
-            lastName: '',
-            phone: '',
-            address: '',
+            username: '',
+            contraseña: '',
+            nombre: '',
+            apellidos: '',
+            telefono: '',
+            direccion: '',
             rol: ''
         });
     };
@@ -45,7 +45,7 @@ function UserForm() {
     return (
         <form
             className="w-full mx-auto p-6 bg-white dark:bg-slate-800 rounded-lg shadow-md"
-            onSubmit={handleSubmit} // Manejador del envío
+            onSubmit={handleSubmit} 
         >
             <div className="space-y-4">
                 <div>
@@ -53,33 +53,33 @@ function UserForm() {
                     <InputForm
                         id="username"
                         type="text"
-                        placeholder="Username"
-                        name="user"
-                        value={formData.user}
+                        placeholder="Ingresar nombre de usuario"
+                        name="username"
+                        value={formData.username}
                         onChange={handleInputChange} // Actualización del estado
                         className="mt-1 block w-full rounded-md shadow-sm dark:bg-slate-700 h-10 p-1 dark:text-white"
                     />
                 </div>
                 <div>
-                    <label htmlFor="password" className="block text-lg font-medium text-gray-800 dark:text-slate-200">Password</label>
+                    <label htmlFor="password" className="block text-lg font-medium text-gray-800 dark:text-slate-200">Contraseña</label>
                     <InputForm
-                        id="password"
+                        id="contraseña"
                         type="password"
-                        name="password"
-                        value={formData.password}
+                        name="contraseña"
+                        value={formData.contraseña}
                         onChange={handleInputChange}
-                        placeholder="Password"
+                        placeholder="Ingrese su futura contraseña"
                         className="mt-1 block w-full rounded-md shadow-sm dark:bg-slate-700 h-10 p-1 dark:text-white"
                     />
                 </div>
                 <div>
                     <label htmlFor="name" className="block text-lg font-medium text-gray-800 dark:text-slate-200">Nombre</label>
                     <InputForm
-                        id="name"
+                        id="nombre"
                         type="text"
-                        placeholder="Nombre"
-                        name="name"
-                        value={formData.name}
+                        placeholder="Ingrese su nombre"
+                        name="nombre"
+                        value={formData.nombre}
                         onChange={handleInputChange}
                         className="mt-1 block w-full rounded-md shadow-sm dark:bg-slate-700 h-10 p-1 dark:text-white"
                     />
@@ -87,11 +87,11 @@ function UserForm() {
                 <div>
                     <label htmlFor="lastName" className="block text-lg font-medium text-gray-800 dark:text-slate-200">Apellidos</label>
                     <InputForm
-                        id="lastName"
+                        id="apellidos"
                         type="text"
-                        placeholder="Apellidos"
-                        name="lastName"
-                        value={formData.lastName}
+                        placeholder="Ingrese sus apellidos"
+                        name="apellidos"
+                        value={formData.apellidos}
                         onChange={handleInputChange}
                         className="mt-1 block w-full rounded-md shadow-sm dark:bg-slate-700 h-10 p-1 dark:text-white"
                     />
@@ -99,11 +99,11 @@ function UserForm() {
                 <div>
                     <label htmlFor="phone" className="block text-lg font-medium text-gray-800 dark:text-slate-200">Teléfono</label>
                     <InputForm
-                        id="phone"
+                        id="telefono"
                         type="tel"
-                        placeholder="Teléfono"
-                        name="phone"
-                        value={formData.phone}
+                        placeholder="Ingrese su telefono"
+                        name="telefono"
+                        value={formData.telefono}
                         onChange={handleInputChange}
                         className="mt-1 block w-full rounded-md shadow-sm dark:bg-slate-700 h-10 p-1 dark:text-white"
                     />
@@ -111,11 +111,11 @@ function UserForm() {
                 <div>
                     <label htmlFor="address" className="block text-lg font-medium text-gray-800 dark:text-slate-200">Dirección</label>
                     <InputForm
-                        id="address"
+                        id="direccion"
                         type="text"
-                        placeholder="Dirección"
-                        name="address"
-                        value={formData.address}
+                        placeholder="Ingrese la direccion donde vive (calle con numero, colonia)"
+                        name="direccion"
+                        value={formData.direccion}
                         onChange={handleInputChange}
                         className="mt-1 block w-full rounded-md shadow-sm dark:bg-slate-700 h-10 p-1 dark:text-white"
                     />
@@ -127,7 +127,8 @@ function UserForm() {
                         className="h-10 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring dark:bg-slate-700 dark:text-white"
                         value={formData.rol}
                         name="rol"
-                        onChange={handleInputChange} // Actualización del estado
+                        onChange={handleInputChange}
+                        required    
                     >
                         <option value="">Seleccionar rol</option>
                         <option value="administrador">Administrador</option>

@@ -11,7 +11,8 @@ function InputForm(props) {
                 placeholder={props.placeholder}
                 required
                 value={props.value}
-                onChange={props.onChange}  
+                onChange={props.onChange}
+                disabled={props.disabled} 
             />
         </div>
     );
