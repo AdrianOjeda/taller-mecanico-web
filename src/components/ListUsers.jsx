@@ -1,22 +1,42 @@
-import React, { useState } from "react";
-import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
+import React, { useState , useEffect} from "react";
 import InputForm from "./InputForm";
 import { useNavigate } from "react-router-dom";
-
+import Table from "./Table";
+import MobileTable from "./MobileTable";
 function ListUsers() {
+
+    const headers = ['ID','Username','Nombre','Apellidos','Telefono','Direccion','Rol', 'Editar', 'Eliminar']
+
+    const [datas, setDatas] = useState([]);
     const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
-        user: '',
-        password: '',
-        name: '',
-        lastName: '',
-        phone: '',
-        address: '',
+        username: '',
+        contraseña: '',
+        nombre: '',
+        apellidos: '',
+        telefono: '',
+        direccion: '',
         rol: ''
     });
 
-    const openEditPopup = () => {
+
+    useEffect(() => {
+
+        const fetchData = async () => {
+            const response = [
+                { id: 1, username: 'ElJhova', nombre: 'Christian', contraseña:"qwerty" ,apellidos: 'Flores', telefono: '454545545', direccion: 'Brillante', rol: 'Administrador'},
+                { id: 2, username: 'ElJhova', nombre: 'Jhovany', contraseña:"Contraseña",apellidos: 'Lozano', telefono: '454545454', direccion: 'ala', rol: 'Gerente'},
+            ];
+            setDatas(response);
+        };
+
+        fetchData();
+    }, []);
+
+    const openEditPopup = (id) => {
+        console.log(id);
+        setFormData(id);
         setIsEditPopupOpen(true);
     };
 
@@ -27,6 +47,7 @@ function ListUsers() {
     const handleEditSubmit = (e) => {
         e.preventDefault();
         console.log(formData);
+        //aqui debe ir la api que edita
         
         closeEditPopup();
 
@@ -36,12 +57,12 @@ function ListUsers() {
         });
 
         setFormData({
-            user: '',
-            password: '',
-            name: '',
-            lastName: '',
-            phone: '',
-            address: '',
+            username: '',
+            contraseña: '',
+            nombre: '',
+            apellidos: '',
+            telefono: '',
+            direccion: '',
             rol: ''
         });
     };
@@ -65,102 +86,14 @@ function ListUsers() {
             <div className="h-2"></div>
             <section className="flex bg-gray-200 dark:bg-slate-600 rounded-lg w-auto">
                 <div className="container px-6 py-8 mx-auto">
-                    <h3 className="text-3xl font-medium text-gray-700 dark:text-white">Usuarios</h3>
-                    
+                    <h3 className="text-3xl font-medium text-gray-700 dark:text-white">Usuarios</h3> 
                     <div className="flex flex-col mt-8">
-                        {/* Tabla grande */}
-                        <div className="hidden xl:block bg-white dark:bg-gray-800 overflow-x-auto rounded-lg shadow">
-                            <table className="min-w-full">
-                                <thead className="bg-gray-50 dark:bg-gray-700">
-                                    <tr>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">ID</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Username</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Nombre</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Apellidos</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Teléfono</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Dirección</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Rol</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Editar</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Eliminar</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="bg-white dark:bg-gray-800">
-                                    <tr>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">1</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">ElJhova</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">Christian</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">Flores Lozano</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">33308943</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">Brillante</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">Administrador</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                                            <button onClick={() => openEditPopup()}><EditIcon/></button>
-                                        </td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                                            <DeleteIcon onClick={() => handleDeleteSubmit(1)} />
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        {/* Tabla pequeña (Mobile) */}
-                        <div className="xl:hidden space-y-6">
-                            <div className="bg-white dark:bg-gray-800 shadow overflow-hidden rounded-lg">
-                                <div className="px-4 py-5 sm:px-6">
-                                    <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">Usuario</h3>
-                                </div>
-                                <div className="border-t border-gray-200 dark:border-gray-700">
-                                    <dl>
-                                        <div className="bg-gray-50 dark:bg-gray-700 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                            <dt className="text-sm font-medium text-gray-500 dark:text-gray-300">ID</dt>
-                                            <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">1</dd>
-                                        </div>
-                                        <div className="bg-white dark:bg-gray-800 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                            <dt className="text-sm font-medium text-gray-500 dark:text-gray-300">Username</dt>
-                                            <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">ElJhova</dd>
-                                        </div>
-                                        <div className="bg-gray-50 dark:bg-gray-700 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                            <dt className="text-sm font-medium text-gray-500 dark:text-gray-300">Nombre</dt>
-                                            <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">Christian</dd>
-                                        </div>
-                                        <div className="bg-white dark:bg-gray-800 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                            <dt className="text-sm font-medium text-gray-500 dark:text-gray-300">Apellidos</dt>
-                                            <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">Flores Lozano</dd>
-                                        </div>
-                                        <div className="bg-gray-50 dark:bg-gray-700 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                            <dt className="text-sm font-medium text-gray-500 dark:text-gray-300">Teléfono</dt>
-                                            <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">30303923</dd>
-                                        </div>
-                                        <div className="bg-white dark:bg-gray-800 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                            <dt className="text-sm font-medium text-gray-500 dark:text-gray-300">Dirección</dt>
-                                            <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">Brillante</dd>
-                                        </div>
-                                        <div className="bg-gray-50 dark:bg-gray-700 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                            <dt className="text-sm font-medium text-gray-500 dark:text-gray-300">Rol</dt>
-                                            <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">Administrador</dd>
-                                        </div>
-                                        <div className="bg-white dark:bg-gray-800 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                            <dt className="text-sm font-medium text-gray-500 dark:text-gray-300">Editar</dt>
-                                            <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
-                                                <button onClick={() => openEditPopup()}><EditIcon /></button>
-                                            </dd>
-                                        </div>
-                                        <div className="bg-gray-50 dark:bg-gray-700 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                            <dt className="text-sm font-medium text-gray-500 dark:text-gray-300">Eliminar</dt>
-                                            <dd className="mt-1 text-sm text-gray-900 dark:text-white sm:mt-0 sm:col-span-2">
-                                                <DeleteIcon onClick={() => handleDeleteSubmit(1)} />
-                                            </dd>
-                                        </div>
-                                    </dl>
-                                </div>
-                            </div>
-                        </div>
+                        <Table headers={headers} datas={datas} openEditPopup={openEditPopup} handleDeleteSubmit={handleDeleteSubmit}/>
+                        <MobileTable  datas={datas} handleDeleteSubmit={handleDeleteSubmit} openEditPopup={openEditPopup} type="usuario" />
                     </div>
                 </div>
             </section>
 
-            {/* Popup de edición */}
             {isEditPopupOpen && (
             <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-auto w-full flex justify-center items-center" id="my-modal">
                 <div className="relative mx-auto p-5 border w-full max-w-lg shadow-lg rounded-md bg-white dark:bg-gray-800">
@@ -173,25 +106,25 @@ function ListUsers() {
                                 </label>
                                 <InputForm 
                                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-900 dark:text-white leading-tight focus:outline-none focus:shadow-outline" 
-                                    id="user" 
+                                    id="username" 
                                     type="text" 
-                                    name="user"
+                                    name="username"
                                     placeholder="Username"
-                                    value={formData.user}
+                                    value={formData.username}
                                     onChange={handleInputChange}
                                 />
                             </div>
                             <div className="mb-4">
-                                <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="nombre">
-                                    Password
+                                <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="pasword">
+                                    Contraseña
                                 </label>
                                 <InputForm 
                                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-900 dark:text-white leading-tight focus:outline-none focus:shadow-outline" 
-                                    id="password" 
+                                    id="contraseña" 
                                     type="password" 
-                                    name="password"
+                                    name="contraseña"
                                     placeholder="Password"
-                                    value={formData.password}
+                                    value={formData.contraseña}
                                     onChange={handleInputChange}
                                 />
                             </div>
@@ -201,11 +134,11 @@ function ListUsers() {
                                 </label>
                                 <InputForm 
                                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-900 dark:text-white leading-tight focus:outline-none focus:shadow-outline" 
-                                    id="name" 
+                                    id="nombre" 
                                     type="text" 
-                                    name="name"
+                                    name="nombre"
                                     placeholder="Nombre"
-                                    value={formData.name}
+                                    value={formData.nombre}
                                     onChange={handleInputChange}
                                 />
                             </div>
@@ -215,11 +148,11 @@ function ListUsers() {
                                 </label>
                                 <InputForm 
                                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-900 dark:text-white leading-tight focus:outline-none focus:shadow-outline" 
-                                    id="lastName" 
+                                    id="apellidos" 
                                     type="text" 
-                                    name="lastName"
+                                    name="apellidos"
                                     placeholder="Apellidos"
-                                    value={formData.lastName}
+                                    value={formData.apellidos}
                                     onChange={handleInputChange}
                                 />
                             </div>
@@ -229,11 +162,11 @@ function ListUsers() {
                                 </label>
                                 <InputForm 
                                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-900 dark:text-white leading-tight focus:outline-none focus:shadow-outline" 
-                                    id="phone" 
-                                    type="text" 
-                                    name="phone"
+                                    id="telefono" 
+                                    type="tel" 
+                                    name="telefono"
                                     placeholder="Teléfono"
-                                    value={formData.phone}
+                                    value={formData.telefono}
                                     onChange={handleInputChange}
                                 />
                             </div>
@@ -243,11 +176,11 @@ function ListUsers() {
                                 </label>
                                 <InputForm 
                                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-900 dark:text-white leading-tight focus:outline-none focus:shadow-outline" 
-                                    id="address" 
+                                    id="direccion" 
                                     type="text" 
-                                    name="address"
-                                    placeholder="address"
-                                    value={formData.address}
+                                    name="direccion"
+                                    placeholder="Direccion"
+                                    value={formData.direccion}
                                     onChange={handleInputChange}
                                 />
                             </div>
@@ -261,7 +194,9 @@ function ListUsers() {
                                     value={formData.rol}
                                     name= "rol"
                                     onChange={handleInputChange}
-                                >
+                                    required
+                                >   
+                                    <option value=""></option>
                                     <option value="administrador">Administrador</option>
                                     <option value="secretaria">Secretaria</option>
                                     <option value="gerente">Gerente</option>
