@@ -7,7 +7,7 @@ function SparePartsForm() {
     const [formData, setFormData] = useState({
         nombrePieza: '',
         descripcion: '',
-        stock: '',
+        stock: 0,
     })
 
     const navigate = useNavigate();
@@ -70,7 +70,7 @@ function SparePartsForm() {
                     <label htmlFor="stock" className="block text-lg font-medium text-gray-800 dark:text-slate-200">Stock</label>
                     <InputForm
                         id="stock"
-                        type="text"
+                        type="number"
                         placeholder="Ingrese si la pieza se encuentra en stock"
                         name="stock"
                         value={formData.stock}

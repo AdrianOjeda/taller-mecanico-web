@@ -48,7 +48,8 @@ function Login(){
     };
 
     useEffect(() => {
-        if(checked){
+        const isDark = localStorage.getItem("theme");
+        if(checked || isDark === "dark"){
             document.documentElement.classList.add("dark");
         } else {
             document.documentElement.classList.remove("dark");

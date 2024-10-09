@@ -5,7 +5,17 @@ import Table from "./Table";
 import MobileTable from "./MobileTable";
 function ListUsers() {
 
-    const headers = ['ID','Username','Nombre','Apellidos','Telefono','Direccion','Rol', 'Editar', 'Eliminar']
+    const headers = [
+        { label: 'ID', key: 'id' },
+        { label: 'Username', key: 'username' },
+        { label: 'Nombre', key: 'nombre' },
+        { label: 'Apellidos', key: 'apellidos' },
+        { label: 'Teléfono', key: 'telefono' },
+        { label: 'Dirección', key: 'direccion' },
+        { label: 'Rol', key: 'rol' },
+        { label: 'Editar', key: 'editar' }, // Botón de Editar
+        { label: 'Eliminar', key: 'eliminar' } // Botón de Eliminar
+      ];
 
     const [datas, setDatas] = useState([]);
     const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);

@@ -5,7 +5,18 @@ import MobileTable from "./MobileTable"
 import { useNavigate } from "react-router-dom";
 
 function ListVehicles() {
-    const headers = ['ID', 'Cliente', 'Marca', 'Modelo', 'Matricula', 'Fecha', 'Color', 'Notas', 'Editar', 'Eliminar'];
+    const headers = [
+        { label: 'ID', key: 'id' },
+        { label: 'Cliente', key: 'cliente' },
+        { label: 'Marca', key: 'marca' },
+        { label: 'Modelo', key: 'modelo' },
+        { label: 'Matricula', key: 'matricula' },
+        { label: 'Fecha', key: 'fecha' },
+        { label: 'Notas', key: 'notas' },
+        { label: 'Color', key: 'color'},
+        { label: 'Editar', key: 'editar' }, // Botón de Editar
+        { label: 'Eliminar', key: 'eliminar' } // Botón de Eliminar
+        ];
     const [datas, setDatas] = useState([]);
     const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
     const navigate = useNavigate();
@@ -23,7 +34,7 @@ function ListVehicles() {
 
         const fetchData = async () => {
             const response = [
-                { id: 1, cliente: 'Jhovany', marca: 'Nissan', modelo: 'Versa', matricula: 'MJDH93', fecha: '03/10/2024', color: 'Rojo', notas: 'El carro presenta un impacto de arma de fuego' },
+                { id: 1, cliente: 'Jhovany', marca: 'Nissan', modelo: 'Versa', matricula: 'MJDH93', fecha: '03/10/2024', color: '#f2a223', notas: 'El carro presenta un impacto de arma de fuego' },
                 
             ];
             setDatas(response);
@@ -84,7 +95,7 @@ function ListVehicles() {
                 <div className="container px-6 py-8 mx-auto">
                     <h3 className="text-3xl font-medium text-gray-700 dark:text-white">Vehículos</h3>
                     <div className="flex flex-col mt-8">
-                        <Table headers={headers} datas={datas} openEditPopup={openEditPopup} handleDeleteSubmit={handleDeleteSubmit} />
+                        <Table headers={headers} datas={datas} openEditPopup={openEditPopup} handleDeleteSubmit={handleDeleteSubmit} isColor={true}/>
                         <MobileTable  datas={datas} handleDeleteSubmit={handleDeleteSubmit} openEditPopup={openEditPopup} type="vehiculo"/>
                     </div>
                     
@@ -138,14 +149,14 @@ function ListVehicles() {
                                     onChange={handleInputChange}
                                 />
                             </div>
-                            <div className="mb-4">
+                            <div className="mb-4 ">
                                 <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="color">
                                     Color
                                 </label>
                                 <InputForm 
-                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-900 dark:text-white leading-tight focus:outline-none focus:shadow-outline" 
+                                    className="shadow appearance-none border rounded w-full h-11 py-2 px-3 text-gray-700 dark:bg-gray-900 dark:text-white leading-tight focus:outline-none focus:shadow-outline" 
                                     id="color" 
-                                    type="text" 
+                                    type="color" 
                                     name="color"
                                     placeholder="Color"
                                     value={formData.color}

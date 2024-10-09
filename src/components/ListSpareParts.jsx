@@ -5,7 +5,14 @@ import MobileTable from "./MobileTable"
 import { useNavigate } from "react-router-dom";
 
 function ListSpareParts() {
-    const headers = ['ID', 'NombrePieza', 'Descripcion', 'Stock', 'Editar', 'Eliminar'];
+    const headers =  [
+        { label: 'ID', key: 'id' },
+        { label: 'Nombre', key: 'nombre' },
+        { label: 'Descripción', key: 'descripcion' },
+        { label: 'Stock', key: 'stock' },
+        { label: 'Editar', key: 'editar' }, // Botón de Editar
+        { label: 'Eliminar', key: 'eliminar' } // Botón de Eliminar
+    ];
     const [datas, setDatas] = useState([]);
     const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
     const navigate = useNavigate();
@@ -19,7 +26,7 @@ function ListSpareParts() {
 
         const fetch = async () => {
             const response = [
-                { id: 1, nombrePieza: 'Faros', descripcion: 'Roto', stock: 'Si',}
+                { id: 1, nombre: 'Faros', descripcion: 'Roto', stock: 112,}
                 
             ];
             setDatas(response);
@@ -51,7 +58,7 @@ function ListSpareParts() {
         });
 
         setFormData({
-            nombrePieza: '',
+            nombre: '',
             descripcion: '',
             stock: '',
         });
@@ -94,11 +101,11 @@ function ListSpareParts() {
                                 </label>
                                 <InputForm 
                                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-900 dark:text-white leading-tight focus:outline-none focus:shadow-outline" 
-                                    id="nombrePieza" 
+                                    id="nombre" 
                                     type="text" 
-                                    name="nombrePieza"
+                                    name="nonbre"
                                     placeholder="Ingrese la nueva pieza"
-                                    value={formData.nombrePieza}
+                                    value={formData.nombre}
                                     onChange={handleInputChange}
                                 />
                             </div>
@@ -123,7 +130,7 @@ function ListSpareParts() {
                                 <InputForm 
                                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-900 dark:text-white leading-tight focus:outline-none focus:shadow-outline" 
                                     id="stock" 
-                                    type="text" 
+                                    type="number" 
                                     name="stock"
                                     placeholder="Ingrese si se encuentra en Stock o no"
                                     value={formData.stock}
