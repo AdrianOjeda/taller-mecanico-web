@@ -138,7 +138,7 @@ function VeihcleForm() {
                     <label htmlFor="color" className="block text-lg font-medium text-gray-800 dark:text-slate-200">color</label>
                     <InputForm
                         id="color"
-                        type="text"
+                        type="color"
                         placeholder="Ingrese descripcion del color"
                         name="color"
                         value={formData.color}
