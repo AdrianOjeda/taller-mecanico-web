@@ -4,7 +4,7 @@ import ListVehicles from "../components/ListVehicles";
 import VehicleForm from "../components/VehicleForm";
 function Vehicles() {
     return (
-        <div className="dark:bg-azulBg bg-slate-300 h-auto w-screen lg:flex">
+        <div className="dark:bg-azulBg bg-slate-300 min-h-screen w-full lg:flex">
             <div className="w-auto lg:w-56 relative">
                 <SideBar />
             </div>
