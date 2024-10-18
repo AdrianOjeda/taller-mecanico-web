@@ -132,7 +132,7 @@ function UserForm() {
                     >
                         <option value="">Seleccionar rol</option>
                         <option value="administrador">Administrador</option>
-                        <option value="secretaria">Secretaria</option>
+                        
                         <option value="gerente">Gerente</option>
                         <option value="mecanico">Mecánico</option>
                     </select>

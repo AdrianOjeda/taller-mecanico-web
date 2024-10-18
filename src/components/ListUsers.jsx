@@ -6,13 +6,13 @@ import MobileTable from "./MobileTable";
 function ListUsers() {
 
     const headers = [
-        { label: 'ID', key: 'id' },
+        { label: 'ID', key: 'idUser' },
         { label: 'Username', key: 'username' },
-        { label: 'Nombre', key: 'nombre' },
-        { label: 'Apellidos', key: 'apellidos' },
-        { label: 'Teléfono', key: 'telefono' },
-        { label: 'Dirección', key: 'direccion' },
-        { label: 'Rol', key: 'rol' },
+        { label: 'Nombre', key: 'name' },
+        { label: 'Apellidos', key: 'lastName' },
+        { label: 'Teléfono', key: 'cellPhone' },
+        { label: 'Dirección', key: 'address' },
+        { label: 'Rol', key: 'role' },
         { label: 'Editar', key: 'editar' }, // Botón de Editar
         { label: 'Eliminar', key: 'eliminar' } // Botón de Eliminar
       ];
@@ -34,13 +34,20 @@ function ListUsers() {
     useEffect(() => {
 
         const fetchData = async () => {
-            const response = [
-                { id: 1, username: 'ElJhova', nombre: 'Christian', contraseña:"qwerty" ,apellidos: 'Flores', telefono: '454545545', direccion: 'Brillante', rol: 'Administrador'},
-                { id: 2, username: 'ElJhova', nombre: 'Jhovany', contraseña:"Contraseña",apellidos: 'Lozano', telefono: '454545454', direccion: 'ala', rol: 'Gerente'},
-            ];
-            setDatas(response);
+            try {
+                const response = await fetch('/api/users'); // API call to my Spring Boot backend
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                console.log(data);
+                
+                setDatas(data);  
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
         };
-
+    
         fetchData();
     }, []);
 
