@@ -19,15 +19,17 @@ function ListUsers() {
 
     const [datas, setDatas] = useState([]);
     const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
+
+    const [editingUserId, setEditingUserId] = useState(null);
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         username: '',
-        contraseña: '',
-        nombre: '',
-        apellidos: '',
-        telefono: '',
-        direccion: '',
-        rol: ''
+        password: '',
+        name: '',
+        lastName: '',
+        cellPhone: '',
+        address: '',
+        role: ''
     });
 
 
@@ -54,6 +56,7 @@ function ListUsers() {
     const openEditPopup = (id) => {
         console.log(id);
         setFormData(id);
+        setEditingUserId(id.idUser);
         setIsEditPopupOpen(true);
     };
 
@@ -61,27 +64,45 @@ function ListUsers() {
         setIsEditPopupOpen(false);
     };
 
-    const handleEditSubmit = (e) => {
+    const handleEditSubmit = async(e) => {
         e.preventDefault();
+        console.log(editingUserId);
+        
         console.log(formData);
         //aqui debe ir la api que edita
         
-        closeEditPopup();
-
-        navigate('/users', {
-            replace: true,
-            state: { formData }
+        const response = await fetch(`/api/users/editar/${editingUserId}`,{
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
         });
 
-        setFormData({
-            username: '',
-            contraseña: '',
-            nombre: '',
-            apellidos: '',
-            telefono: '',
-            direccion: '',
-            rol: ''
-        });
+        if(!response.ok){
+            swal({icon:"error", title:"No se pudo editar el usuario!"});
+        }else{
+            
+            swal({icon:"success", title:"Usuario editado con exito"});
+
+            closeEditPopup();
+
+            navigate('/users', {
+                replace: true,
+                state: { formData }
+            });
+
+            setFormData({
+                username: '',
+                password: '',
+                name: '',
+                lastName: '',
+                cellPhone: '',
+                address: '',
+                role: ''
+            });
+        }
+
     };
 
     const handleDeleteSubmit = (userId) => {
@@ -139,9 +160,9 @@ function ListUsers() {
                                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-900 dark:text-white leading-tight focus:outline-none focus:shadow-outline" 
                                     id="contraseña" 
                                     type="password" 
-                                    name="contraseña"
+                                    name="password"
                                     placeholder="Password"
-                                    value={formData.contraseña}
+                                    value={formData.password}
                                     onChange={handleInputChange}
                                 />
                             </div>
@@ -153,9 +174,9 @@ function ListUsers() {
                                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-900 dark:text-white leading-tight focus:outline-none focus:shadow-outline" 
                                     id="nombre" 
                                     type="text" 
-                                    name="nombre"
+                                    name="name"
                                     placeholder="Nombre"
-                                    value={formData.nombre}
+                                    value={formData.name}
                                     onChange={handleInputChange}
                                 />
                             </div>
@@ -167,9 +188,9 @@ function ListUsers() {
                                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-900 dark:text-white leading-tight focus:outline-none focus:shadow-outline" 
                                     id="apellidos" 
                                     type="text" 
-                                    name="apellidos"
+                                    name="lastName"
                                     placeholder="Apellidos"
-                                    value={formData.apellidos}
+                                    value={formData.lastName}
                                     onChange={handleInputChange}
                                 />
                             </div>
@@ -181,9 +202,9 @@ function ListUsers() {
                                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-900 dark:text-white leading-tight focus:outline-none focus:shadow-outline" 
                                     id="telefono" 
                                     type="tel" 
-                                    name="telefono"
+                                    name="cellPhone"
                                     placeholder="Teléfono"
-                                    value={formData.telefono}
+                                    value={formData.cellPhone}
                                     onChange={handleInputChange}
                                 />
                             </div>
@@ -195,9 +216,9 @@ function ListUsers() {
                                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-900 dark:text-white leading-tight focus:outline-none focus:shadow-outline" 
                                     id="direccion" 
                                     type="text" 
-                                    name="direccion"
+                                    name="address"
                                     placeholder="Direccion"
-                                    value={formData.direccion}
+                                    value={formData.address}
                                     onChange={handleInputChange}
                                 />
                             </div>
@@ -208,16 +229,15 @@ function ListUsers() {
                                 <select 
                                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-900 dark:text-white leading-tight focus:outline-none focus:shadow-outline" 
                                     id="rol" 
-                                    value={formData.rol}
-                                    name= "rol"
+                                    value={formData.role}
+                                    name= "role"
                                     onChange={handleInputChange}
                                     required
                                 >   
                                     <option value=""></option>
-                                    <option value="administrador">Administrador</option>
-                                    <option value="secretaria">Secretaria</option>
-                                    <option value="gerente">Gerente</option>
-                                    <option value="mecanico">Mecánico</option>
+                                    <option value="ADMINISTRADOR">Administrador</option>
+                                    <option value="GERENTE">Gerente</option>
+                                    <option value="MECANICO">Mecánico</option>
                                 </select>
                             </div>
                             <div className="flex items-center justify-between">
@@ -225,7 +245,7 @@ function ListUsers() {
                                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" 
                                 type="submit"
                                 id="saveChange"
-                                name="rol"
+                                name="save"
                             >
                                 Guardar Cambios
                             </button>
