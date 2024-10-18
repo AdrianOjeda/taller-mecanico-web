@@ -98,6 +98,11 @@ function SideBar() {
                                 <span className="ms-3">Piezas</span>
                             </Link>
                         </li>
+                        <li>
+                            <Link to='/charts' className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                                <span className="ms-3">Estadisticas</span>
+                            </Link>
+                        </li>
                     </ul>
                 </div>
             </aside>

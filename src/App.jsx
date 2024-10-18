@@ -5,6 +5,7 @@ import Customers from './pages/Customers';
 import Vehicles from './pages/Vehicles';
 import Repairs from './pages/Repairs';
 import SpareParts from './pages/SpareParts';
+import Charts from './pages/Charts';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path='/vehicles' element={<Vehicles />} />
         <Route path='/repairs' element={<Repairs />} />
         <Route path='/spareparts' element={<SpareParts />} />
+        <Route path='/charts' element={<Charts/>}/>
       </Routes>
     </BrowserRouter>
   );
