@@ -1,37 +1,59 @@
 import React, { useState } from "react";
 import InputForm from './InputForm';
 import { useNavigate } from "react-router-dom";
+import swal from 'sweetalert';
 
 function UserForm() {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         username: '',
-        contraseña: '',
-        nombre: '',
-        apellidos: '',
-        telefono: '',
-        direccion: '',
-        rol: ''
+        password: '',
+        name: '',
+        lastName: '',
+        cellPhone: '',
+        address: '',
+        role: ''
     });
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async(e) => {
         e.preventDefault();
         console.log(formData);
-        
-        navigate('/users', {
-            replace: true,
-            state: { formData }
-        });
 
-        setFormData({
-            username: '',
-            contraseña: '',
-            nombre: '',
-            apellidos: '',
-            telefono: '',
-            direccion: '',
-            rol: ''
-        });
+        try{
+            const response = await fetch('api/users', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData), //Sending the form info to the backend
+
+            });
+
+            if (response.ok) {
+                swal({ icon: "success", title: "Usuario creado con éxito" });
+                navigate('/users', {
+                    replace: true,
+                    state: { formData }
+                });
+        
+                setFormData({
+                    username: '',
+                    password: '',
+                    name: '',
+                    lastName: '',
+                    cellPhone: '',
+                    address: '',
+                    role: ''
+                });
+            }else {
+                throw new Error('Error en la creación del usuario');
+            }
+
+        }catch(error){
+            swal({icon:"error", title:"No se pudo ingresar el usuario"});
+        }
+
+        
     };
 
     const handleInputChange = (e) => {
@@ -65,8 +87,8 @@ function UserForm() {
                     <InputForm
                         id="contraseña"
                         type="password"
-                        name="contraseña"
-                        value={formData.contraseña}
+                        name="password"
+                        value={formData.password}
                         onChange={handleInputChange}
                         placeholder="Ingrese su futura contraseña"
                         className="mt-1 block w-full rounded-md shadow-sm dark:bg-slate-700 h-10 p-1 dark:text-white"
@@ -78,8 +100,8 @@ function UserForm() {
                         id="nombre"
                         type="text"
                         placeholder="Ingrese su nombre"
-                        name="nombre"
-                        value={formData.nombre}
+                        name="name"
+                        value={formData.name}
                         onChange={handleInputChange}
                         className="mt-1 block w-full rounded-md shadow-sm dark:bg-slate-700 h-10 p-1 dark:text-white"
                     />
@@ -90,8 +112,8 @@ function UserForm() {
                         id="apellidos"
                         type="text"
                         placeholder="Ingrese sus apellidos"
-                        name="apellidos"
-                        value={formData.apellidos}
+                        name="lastName"
+                        value={formData.lastName}
                         onChange={handleInputChange}
                         className="mt-1 block w-full rounded-md shadow-sm dark:bg-slate-700 h-10 p-1 dark:text-white"
                     />
@@ -102,8 +124,8 @@ function UserForm() {
                         id="telefono"
                         type="tel"
                         placeholder="Ingrese su telefono"
-                        name="telefono"
-                        value={formData.telefono}
+                        name="cellPhone"
+                        value={formData.cellPhone}
                         onChange={handleInputChange}
                         className="mt-1 block w-full rounded-md shadow-sm dark:bg-slate-700 h-10 p-1 dark:text-white"
                     />
@@ -114,8 +136,8 @@ function UserForm() {
                         id="direccion"
                         type="text"
                         placeholder="Ingrese la direccion donde vive (calle con numero, colonia)"
-                        name="direccion"
-                        value={formData.direccion}
+                        name="address"
+                        value={formData.address}
                         onChange={handleInputChange}
                         className="mt-1 block w-full rounded-md shadow-sm dark:bg-slate-700 h-10 p-1 dark:text-white"
                     />
@@ -125,16 +147,16 @@ function UserForm() {
                     <select
                         id="rol"
                         className="h-10 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring dark:bg-slate-700 dark:text-white"
-                        value={formData.rol}
-                        name="rol"
+                        value={formData.role}
+                        name="role"
                         onChange={handleInputChange}
                         required    
                     >
                         <option value="">Seleccionar rol</option>
-                        <option value="administrador">Administrador</option>
+                        <option value="ADMINISTRADOR">Administrador</option>
                         
-                        <option value="gerente">Gerente</option>
-                        <option value="mecanico">Mecánico</option>
+                        <option value="GERENTE">Gerente</option>
+                        <option value="MECANICO">Mecánico</option>
                     </select>
                 </div>
             </div>
