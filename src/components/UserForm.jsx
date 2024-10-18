@@ -30,7 +30,9 @@ function UserForm() {
             });
 
             if (response.ok) {
-                swal({ icon: "success", title: "Usuario creado con éxito" });
+                swal({ icon: "success", title: "Usuario creado con éxito" }).then(() => {
+                    window.location.reload(); 
+                });
                 navigate('/users', {
                     replace: true,
                     state: { formData }

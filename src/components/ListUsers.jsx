@@ -77,13 +77,15 @@ function ListUsers() {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(formData),
-        });
+        }); //edit user information endpoint
 
         if(!response.ok){
             swal({icon:"error", title:"No se pudo editar el usuario!"});
         }else{
             
-            swal({icon:"success", title:"Usuario editado con exito"});
+            swal({icon:"success", title:"Usuario editado con exito"}).then(() => {
+                window.location.reload(); 
+            });
 
             closeEditPopup();
 
@@ -105,9 +107,19 @@ function ListUsers() {
 
     };
 
-    const handleDeleteSubmit = (userId) => {
+    const handleDeleteSubmit = async(userId) => {
         console.log(`Eliminando usuario con ID: ${userId}`);
-    
+        const response = await fetch(`/api/users/delete/${userId}`,{
+            method: 'DELETE',
+        }); //Delete endpoint 
+
+        if(response.ok){
+            swal({icon:'success', title:'Usuario eliminado con exito'}).then(() => {
+                window.location.reload(); 
+            });
+        }else{
+            swal({icon:'error', title:'No se pudo eliminar el suario'});
+        }
     };
 
     const handleInputChange = (e) => {
