@@ -11,8 +11,9 @@ function ListCustomers() {
         { label: 'Apellido', key: 'lastName' },
         { label: 'Dirección', key: 'address' },
         { label: 'Teléfono', key: 'phone' },
-        { label: 'Editar', key: 'editar' }, // Para editar
-        { label: 'Eliminar', key: 'eliminar' } // Para eliminar
+        { label: 'Correo Electrónico', key: 'emailCliente' }, // New email column
+        { label: 'Editar', key: 'editar' },
+        { label: 'Eliminar', key: 'eliminar' }
     ];
 
     const [datas, setDatas] = useState([]);
@@ -22,35 +23,31 @@ function ListCustomers() {
         firstName: '',
         lastName: '',
         address: '',
-        phone: ''
+        phone: '',
+        emailCliente: '' // New email field
     });
 
     useEffect(() => {
-        
         fetchData();
-    }, [location.state]);
-
+    }, []);
 
     const fetchData = async () => {
         try {
             const response = await fetch("/api/clientes");
-            if(response.ok){
+            if (response.ok) {
                 const data = await response.json();
                 console.log(data);
                 setDatas(data);
-            }else{
+            } else {
                 throw new Error("Couldn't retrieve customers list");
             }
-            
         } catch (error) {
             console.error("Error fetching data", error);
-            
         }
     };
 
-    const openEditPopup = (id) => {
-        setFormData(id);
-        console.log(id);
+    const openEditPopup = (customer) => { // Changed to accept customer object
+        setFormData(customer); // Populate formData with the selected customer
         setIsEditPopupOpen(true);
     };
 
@@ -74,7 +71,8 @@ function ListCustomers() {
             firstName: '',
             lastName: '',
             address: '',
-            phone: ''
+            phone: '',
+            emailCliente: '' // Reset the email field
         });
     };
 
@@ -160,6 +158,20 @@ function ListCustomers() {
                                         name="phone"
                                         placeholder="Ingrese el nuevo Teléfono del cliente"
                                         value={formData.phone}
+                                        onChange={handleInputChange}
+                                    />
+                                </div>
+                                <div className="mb-4">
+                                    <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="email">
+                                        Correo Electrónico
+                                    </label>
+                                    <InputForm
+                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-900 dark:text-white leading-tight focus:outline-none focus:shadow-outline"
+                                        id="email"
+                                        type="email"
+                                        name="email"
+                                        placeholder="Ingrese el nuevo Correo Electrónico del cliente"
+                                        value={formData.emailCliente}
                                         onChange={handleInputChange}
                                     />
                                 </div>

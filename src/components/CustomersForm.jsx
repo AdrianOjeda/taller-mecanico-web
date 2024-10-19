@@ -1,35 +1,35 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import InputForm from './InputForm';
 import { useNavigate } from "react-router-dom";
+import swal from 'sweetalert';
 
 function CustomersForm() {
     
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
-        phoneNumber: '',
+        phone: '',
         address: '',
+        emailCliente: '', // New email field
     });
 
     const navigate = useNavigate();
 
-    const handleSubmit = async(e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         console.log(formData);
 
         try {
-            
-            const response = await fetch("/api/clientes",{
+            const response = await fetch("/api/clientes", {
                 method: 'POST',
-                headers:{
-                    'Content-Type':'application/json',
+                headers: {
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(formData),
             });
     
-            if(response.ok){
-
-                swal({icon:'success', title:'Cliente agregado con exito'});
+            if (response.ok) {
+                swal({ icon: 'success', title: 'Cliente agregado con éxito' });
                 navigate('/customers', {
                     replace: true,
                     state: { formData }
@@ -38,17 +38,17 @@ function CustomersForm() {
                 setFormData({
                     firstName: '',
                     lastName: '',
-                    phoneNumber: '',
+                    phone: '',
                     address: '',
+                    emailCliente: '', 
                 });
-            }else{
-                
+            } else {
+                const errorData = await response.text();  
+                swal({icon: "error", title: errorData}); 
             }
         } catch (error) {
             console.error(error);
-            
         }
-        
     };
 
     const handleInputChange = (e) => {
@@ -93,11 +93,11 @@ function CustomersForm() {
                 <div>
                     <label htmlFor="phoneNumber" className="block text-lg font-medium text-gray-800 dark:text-slate-200">Teléfono</label>
                     <InputForm
-                        id="phoneNumber"
+                        id="phone"
                         type="tel"
-                        placeholder="Ingresa el telefono del cliente"
-                        name="phoneNumber"
-                        value={formData.phoneNumber}
+                        placeholder="Ingresa el teléfono del cliente"
+                        name="phone"
+                        value={formData.phone}
                         onChange={handleInputChange}
                         className="mt-1 block w-full rounded-md shadow-sm dark:bg-slate-700 h-10 p-1 dark:text-white"
                     />
@@ -107,14 +107,25 @@ function CustomersForm() {
                     <InputForm
                         id="address"
                         type="text"
-                        placeholder="Ingresa la direccion del cliente"
+                        placeholder="Ingresa la dirección del cliente"
                         name="address"
                         value={formData.address}
                         onChange={handleInputChange}
                         className="mt-1 block w-full rounded-md shadow-sm dark:bg-slate-700 h-10 p-1 dark:text-white"
                     />
                 </div>
-              
+                <div>
+                    <label htmlFor="email" className="block text-lg font-medium text-gray-800 dark:text-slate-200">Correo Electrónico</label>
+                    <InputForm
+                        id="email"
+                        type="email"
+                        placeholder="Ingresa el correo electrónico del cliente"
+                        name="emailCliente"
+                        value={formData.emailCliente}
+                        onChange={handleInputChange}
+                        className="mt-1 block w-full rounded-md shadow-sm dark:bg-slate-700 h-10 p-1 dark:text-white"
+                    />
+                </div>
             </div>
             <button
                 type="submit"
