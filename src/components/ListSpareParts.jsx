@@ -7,8 +7,8 @@ import { useNavigate } from "react-router-dom";
 function ListSpareParts() {
     const headers =  [
         { label: 'ID', key: 'id' },
-        { label: 'Nombre', key: 'nombre' },
-        { label: 'Descripción', key: 'descripcion' },
+        { label: 'Nombre', key: 'piezaName' },
+        { label: 'Descripción', key: 'piezaDescripcion' },
         { label: 'Stock', key: 'stock' },
         { label: 'Editar', key: 'editar' }, // Botón de Editar
         { label: 'Eliminar', key: 'eliminar' } // Botón de Eliminar
@@ -17,23 +17,30 @@ function ListSpareParts() {
     const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
-        nombrePieza: '',
-        descripcion: '',
+        piezaName: '',
+        piezaDescripcion: '',
         stock: '',
     });
  // Simulando la carga de datos de una API
-    useEffect(() => {
+ useEffect(() => {
 
-        const fetch = async () => {
-            const response = [
-                { id: 1, nombre: 'Faros', descripcion: 'Roto', stock: 112,}
-                
-            ];
-            setDatas(response);
-        };
+    const fetchData = async () => {
+        try {
+            const response = await fetch('/api/piezas'); // API call to my Spring Boot backend
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            console.log(data);
+            
+            setDatas(data);  
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
 
-        fetch();
-    }, []);
+    fetchData();
+}, []);
 
     const openEditPopup = (id) => {
         setFormData(id)
@@ -58,8 +65,8 @@ function ListSpareParts() {
         });
 
         setFormData({
-            nombre: '',
-            descripcion: '',
+            piezaName: '',
+            piezaDescripcion: '',
             stock: '',
         });
     };
@@ -101,11 +108,11 @@ function ListSpareParts() {
                                 </label>
                                 <InputForm 
                                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-900 dark:text-white leading-tight focus:outline-none focus:shadow-outline" 
-                                    id="nombre" 
+                                    id="piezaName" 
                                     type="text" 
-                                    name="nonbre"
+                                    name="piezaName"
                                     placeholder="Ingrese la nueva pieza"
-                                    value={formData.nombre}
+                                    value={formData.piezaName}
                                     onChange={handleInputChange}
                                 />
                             </div>
@@ -115,11 +122,11 @@ function ListSpareParts() {
                                 </label>
                                 <InputForm 
                                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-900 dark:text-white leading-tight focus:outline-none focus:shadow-outline" 
-                                    id="descripcion" 
+                                    id="piezaDescripcion" 
                                     type="text" 
-                                    name="descripcion"
+                                    name="piezaDescripcion"
                                     placeholder="Ingrese la nueva descripcion de la pieza"
-                                    value={formData.descripcion}
+                                    value={formData.piezaDescripcion}
                                     onChange={handleInputChange}
                                 />
                             </div>
