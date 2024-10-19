@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import InputForm from "../components/InputForm";
+import { Checkbox } from "@mui/material";
 import SwitchTheme from "../components/SwitchTheme";
 import Button from '@mui/material/Button';
 import Swal from 'sweetalert2';
 
 function Login(){
     const [checked, setChecked] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         username: '',
@@ -63,28 +65,24 @@ function Login(){
         }
     }, [checked]);
 
-    
-
     return (
         <>
-        <section className="h-screen flex items-center justify-center flex-col dark:bg-azulBg bg-slate-300">
-            <header className="w-screen flex justify-end dark:text-white items-center ">
-                <h1 className="mx-2">Modo oscuro</h1>
-                <SwitchTheme/>
+        <section className="min-h-screen flex items-center justify-center flex-col dark:bg-azulBg bg-slate-300 p-4 sm:p-8">
+            <header className="w-full flex justify-end items-center mb-4">
+                <h1 className="mx-2 dark:text-white text-lg sm:text-xl">Modo oscuro</h1>
+                <SwitchTheme />
             </header>
-            
-            <div className="w-4/6 h-3/4 bg-slate-700 grid grid-cols-1 grid-rows-2 xl:grid-cols-2 xl:grid-rows-2 rounded-3xl shadow-2xl shadow-gray-800 dark:shadow-slate-950">
-                <div className="hidden xl:flex row-span-2 justify-center items-center">
-                    <img src='.\src\assets\logo.jpg' alt="" className="w-3/4 h-auto rounded-full shadow-2xl" />
+            <div className="w-full max-w-7xl h-full bg-slate-700 grid grid-cols-1 lg:grid-cols-2 rounded-3xl shadow-2xl shadow-gray-800 dark:shadow-slate-950 p-4 lg:p-8 gap-6 sm:gap-8">
+                <div className="hidden lg:flex justify-center items-center">
+                    <img src='.\src\assets\logo.jpg' alt="Logo" className="w-3/4 h-auto rounded-full shadow-2xl" />
                 </div>
-
-                <div className="flex text-5xl md:text-6xl lg:text-7xl text-gray-50 font-serif justify-center items-center p-4 md:p-6 lg:p-8">
-                    <h1 className="text-center">Iniciar sesión</h1>
-                </div>
-
-                <div className="w-full">
-                    <div className=" w-full flex justify-start items-center flex-col gap-10">
+                <div className="flex flex-col justify-center items-center w-full text-center">
+                    <h1 className="text-4xl md:text-5xl lg:text-6xl text-gray-50 font-serif mb-8">
+                        Iniciar sesión
+                    </h1>
+                    <div className="w-full max-w-md space-y-6">
                         <InputForm
+
                         className='w-full h-10 text-center rounded-3xl text-xl'
                         placeholder='Usuario'
                         id='username'
@@ -92,27 +90,34 @@ function Login(){
                         name='username'
                         value={formData.username}
                         onChange={(value) => handleOnChange('username', value)}
+
                         />
                         <InputForm
-                            className='w-full h-10 text-center rounded-3xl text-xl'
-                            placeholder='Contraseña'
-                            id='password'
-                            type='password'
-                            name='password'
-                            value={formData.password} 
+                            className="w-full p-3 text-lg rounded-3xl text-center"
+                            placeholder="Contraseña"
+                            id="password"
+                            type={showPassword ? 'text' : 'password'}
+                            name="password"
+                            value={formData.password}
                             onChange={(value) => handleOnChange('password', value)}
                         />
-
+                        <div className="flex items-center justify-center">
+                            <span className="mr-2 text-gray-50">Mostrar contraseña</span>
+                            <Checkbox
+                                checked={showPassword}
+                                onChange={() => setShowPassword(!showPassword)}
+                                color="default"
+                            />
+                        </div>
                         <Button
                             variant="contained"
-                            className="w-2/4 h-14 bg-black text-white rounded-2xl text-xl"
+                            className="w-full p-3 bg-black text-white rounded-2xl text-xl"
                             onClick={handleClick}
                         >
                             Iniciar
-                        </Button>   
+                        </Button>
                     </div>
                 </div>
-                
             </div>
         </section>
         </>
