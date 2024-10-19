@@ -16,6 +16,7 @@ function ListCustomers() {
         { label: 'Eliminar', key: 'eliminar' }
     ];
 
+    const [editingCustomerId, setEditingCustomerId] = useState(null);
     const [datas, setDatas] = useState([]);
     const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
     const navigate = useNavigate();
@@ -48,6 +49,9 @@ function ListCustomers() {
 
     const openEditPopup = (customer) => { // Changed to accept customer object
         setFormData(customer); // Populate formData with the selected customer
+        setEditingCustomerId(customer.idCliente);
+        
+        
         setIsEditPopupOpen(true);
     };
 
@@ -55,25 +59,50 @@ function ListCustomers() {
         setIsEditPopupOpen(false);
     };
 
-    const handleEditSubmit = (e) => {
+    const handleEditSubmit = async (e) => {
         e.preventDefault();
         console.log(formData);
+        console.log(editingCustomerId);
+        
         // API to edit should go here
 
-        closeEditPopup();
+        try {
+            
+            const response =  await fetch(`/api/clientes/${editingCustomerId}`,{
+                method: 'PUT',
+                headers:{
+                    'Content-Type':'application/json',
+                },
+                body:JSON.stringify(formData),
+            });
+            
+            if(!response.ok){
+                swal({icon:"error", title:"No se pudo editar el cliente"});
 
-        navigate('/customers', {
-            replace: true,
-            state: { formData }
-        });
+            }else{
+                swal({icon:"success", title:"Cliente editado con exito"}).then(()=>{
+                    fetchData();
+                });
+                closeEditPopup();
 
-        setFormData({
-            firstName: '',
-            lastName: '',
-            address: '',
-            phone: '',
-            emailCliente: '' // Reset the email field
-        });
+                navigate('/customers', {
+                    replace: true,
+                    state: { formData }
+                });
+
+                setFormData({
+                    firstName: '',
+                    lastName: '',
+                    address: '',
+                    phone: '',
+                    emailCliente: '' // Reset the email field
+                });
+            }
+            
+        } catch (error) {
+            
+        }
+        
     };
 
     const handleDeleteSubmit = (id) => {
@@ -169,7 +198,7 @@ function ListCustomers() {
                                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-900 dark:text-white leading-tight focus:outline-none focus:shadow-outline"
                                         id="email"
                                         type="email"
-                                        name="email"
+                                        name="emailCliente"
                                         placeholder="Ingrese el nuevo Correo Electrónico del cliente"
                                         value={formData.emailCliente}
                                         onChange={handleInputChange}
