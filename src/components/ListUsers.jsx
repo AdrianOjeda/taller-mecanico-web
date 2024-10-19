@@ -1,6 +1,6 @@
 import React, { useState , useEffect} from "react";
 import InputForm from "./InputForm";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Table from "./Table";
 import MobileTable from "./MobileTable";
 function ListUsers() {
@@ -15,16 +15,19 @@ function ListUsers() {
         { label: 'Rol', key: 'role' },
         { label: 'Editar', key: 'editar' }, // Botón de Editar
         { label: 'Eliminar', key: 'eliminar' } // Botón de Eliminar
-      ];
+    ];
 
     const [datas, setDatas] = useState([]);
     const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
 
     const [editingUserId, setEditingUserId] = useState(null);
+
+    const location = useLocation();
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         username: '',
         password: '',
+        confirmPassword: '',
         name: '',
         lastName: '',
         cellPhone: '',
@@ -32,32 +35,31 @@ function ListUsers() {
         role: ''
     });
 
+    const fetchData = async () => {
+                try {
+                    const response = await fetch('/api/users'); // API call to my Spring Boot backend
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    const data = await response.json();
+                    console.log(data);
+                    
+                    setDatas(data);  
+                } catch (error) {
+                    console.error('Error fetching data:', error);
+                }
+            };
 
     useEffect(() => {
-
-        const fetchData = async () => {
-            try {
-                const response = await fetch('/api/users'); // API call to my Spring Boot backend
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                const data = await response.json();
-                console.log(data);
-                
-                setDatas(data);  
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-    
         fetchData();
-    }, []);
+    }, [location.state]);;
 
     const openEditPopup = (id) => {
         console.log(id);
         setFormData(id);
         setEditingUserId(id.idUser);
         setIsEditPopupOpen(true);
+
     };
 
     const closeEditPopup = () => {
@@ -70,6 +72,10 @@ function ListUsers() {
         
         console.log(formData);
         //aqui debe ir la api que edita
+        if (formData.password !== formData.confirmPassword) {
+            swal({icon:"error", title:"Debe confirmar que las contraseñas sen iguales"})
+            return
+        }
         
         const response = await fetch(`/api/users/editar/${editingUserId}`,{
             method: 'PUT',
@@ -84,19 +90,15 @@ function ListUsers() {
         }else{
             
             swal({icon:"success", title:"Usuario editado con exito"}).then(() => {
-                window.location.reload(); 
+                fetchData();
             });
 
             closeEditPopup();
 
-            navigate('/users', {
-                replace: true,
-                state: { formData }
-            });
-
             setFormData({
                 username: '',
                 password: '',
+                confirmPassword: '',
                 name: '',
                 lastName: '',
                 cellPhone: '',
@@ -115,7 +117,7 @@ function ListUsers() {
 
         if(response.ok){
             swal({icon:'success', title:'Usuario eliminado con exito'}).then(() => {
-                window.location.reload(); 
+                fetchData();
             });
         }else{
             swal({icon:'error', title:'No se pudo eliminar el suario'});
@@ -251,6 +253,20 @@ function ListUsers() {
                                     <option value="GERENTE">Gerente</option>
                                     <option value="MECANICO">Mecánico</option>
                                 </select>
+                            </div>
+                            <div className="mb-4">
+                                    <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="confirmPassword">
+                                        Confirmar Contraseña
+                                    </label>
+                                    <InputForm
+                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-900 dark:text-white leading-tight focus:outline-none focus:shadow-outline"
+                                        id="confirmPassword"
+                                        type="password"
+                                        name="confirmPassword"
+                                        placeholder="Confirmar Password"
+                                        value={formData.confirmPassword}
+                                        onChange={handleInputChange}
+                                    />
                             </div>
                             <div className="flex items-center justify-between">
                             <button 
