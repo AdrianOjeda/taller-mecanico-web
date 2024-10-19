@@ -5,28 +5,50 @@ import { useNavigate } from "react-router-dom";
 function SparePartsForm() {
     
     const [formData, setFormData] = useState({
-        nombrePieza: '',
-        descripcion: '',
+        piezaName: '',
+        piezaDescripcion: '',
         stock: 0,
     })
 
     const navigate = useNavigate();
 
-    const handleSubmit=(e) => {
+    const handleSubmit=async (e) => {
         e.preventDefault();
         console.log(formData)
+        try {
 
-        navigate('/spareparts', {
-            replace: true,
-            state: { formData }
-        });
+            const response = await fetch('/api/piezas',{
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+    
+            if(response.ok){
+                swal({icon:'success', title:'Pieza agregada con exito'}).then(()=>{
+                    window.location.reload();
+                })
+                navigate('/spareparts', {
+                    replace: true,
+                    state: { formData }
+                });
+        
+                setFormData({
+                    piezaName: '',
+                    piezaDescripcion: '',
+                    stock: '',
+                });
+    
+            }else throw new Error('Error agregando nuevas partes');
+            
+        } catch (error) {
+            swal({icon:'error', title:'No se pudo agregar una nueva pieza'})
+        }
 
-        setFormData({
-            nombrePieza: '',
-            descripcion: '',
-            stock: '',
-        });
-    }
+
+        
+        }
         const handleInputChange = (e) => {
             const { name, value } = e.target;
             setFormData({
@@ -45,10 +67,10 @@ function SparePartsForm() {
                 <div>
                     <label htmlFor="namespareparts" className="block text-lg font-medium text-gray-800 dark:text-slate-200">Nombre de la pieza</label>
                     <InputForm
-                        id="nombrePieza"
+                        id="piezaName"
                         type="text"
                         placeholder="Ingrese el nombre de la pieza"
-                        name="nombrePieza"
+                        name="piezaName"
                         value={formData.nombrePieza}
                         onChange={handleInputChange} 
                         className="mt-1 block w-full rounded-md shadow-sm dark:bg-slate-700 h-10 p-1 dark:text-white"
@@ -57,11 +79,11 @@ function SparePartsForm() {
                 <div>
                     <label htmlFor="descripcion" className="block text-lg font-medium text-gray-800 dark:text-slate-200">Descripción</label>
                     <InputForm
-                        id="descripcion"
+                        id="piezaDescripcion"
                         type="text"
                         placeholder="Ingrese la descripcion de la pieza"
-                        name="descripcion"
-                        value={formData.descripcion}
+                        name="piezaDescripcion"
+                        value={formData.piezaDescripcion}
                         onChange={handleInputChange} 
                         className="mt-1 block w-full rounded-md shadow-sm dark:bg-slate-700 h-10 p-1 dark:text-white"
                     />
