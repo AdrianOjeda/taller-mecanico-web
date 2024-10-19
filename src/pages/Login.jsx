@@ -11,7 +11,7 @@ function Login(){
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
-        user: '',
+        username: '',
         password: '',
     });
 
@@ -22,31 +22,38 @@ function Login(){
         });
     };
 
-    const handleClick = (event) => {
+    const handleClick = async(event) => {
         event.preventDefault();
-
-        const isTrue = formData.user === 'hola' && formData.password === '123';
-        if(isTrue){
+        console.log(formData);
+        
+        const response = await fetch('/api/users/login', {
+            method: 'POST', 
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData), // Send username and password in the body
+        });
+    
+        if (response.ok) {
+            const user = await response.json();
             Swal.fire({
-                title:'Inicio de sesión exitoso',
+                title: 'Inicio de sesión exitoso',
                 icon: 'success'
             });
-        } else {
-            Swal.fire({
-                title:'Inicio de sesión fallido',
-                icon: 'error'
-            });
-        }
-
-        if (isTrue) {
             navigate('/users', {
                 replace: true,
                 state: {
-                    logged: isTrue,
-                    user: formData.user,
+                    logged: true,
+                    user: user.username, // Pass the username from the response
                 }
             });
+        } else {
+            Swal.fire({
+                title: 'Credenciales invalidas',
+                icon: 'error'
+            });
         }
+        
     };
 
     useEffect(() => {
@@ -75,13 +82,15 @@ function Login(){
                     </h1>
                     <div className="w-full max-w-md space-y-6">
                         <InputForm
-                            className="w-full p-3 text-lg rounded-3xl text-center"
-                            placeholder="Usuario"
-                            id="user"
-                            type="text"
-                            name="user"
-                            value={formData.user}
-                            onChange={(value) => handleOnChange('user', value)}
+
+                        className='w-full h-10 text-center rounded-3xl text-xl'
+                        placeholder='Usuario'
+                        id='username'
+                        type='text'
+                        name='username'
+                        value={formData.username}
+                        onChange={(value) => handleOnChange('username', value)}
+
                         />
                         <InputForm
                             className="w-full p-3 text-lg rounded-3xl text-center"

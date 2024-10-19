@@ -109,7 +109,9 @@ function ListUsers() {
 
     };
 
-    const handleDeleteSubmit = async(userId) => {
+    const handleDeleteSubmit = async(row) => {
+        console.log(row.idUser);
+        const userId =row.idUser;
         console.log(`Eliminando usuario con ID: ${userId}`);
         const response = await fetch(`/api/users/delete/${userId}`,{
             method: 'DELETE',

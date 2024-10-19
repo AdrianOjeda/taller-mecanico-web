@@ -6,13 +6,15 @@ import { useNavigate } from "react-router-dom";
 
 function ListSpareParts() {
     const headers =  [
-        { label: 'ID', key: 'id' },
+        { label: 'ID', key: 'idPieza' },
         { label: 'Nombre', key: 'piezaName' },
         { label: 'Descripción', key: 'piezaDescripcion' },
         { label: 'Stock', key: 'stock' },
         { label: 'Editar', key: 'editar' }, // Botón de Editar
         { label: 'Eliminar', key: 'eliminar' } // Botón de Eliminar
     ];
+
+    const [editingPiezaId, setEditingPiezaId] = useState(null);
     const [datas, setDatas] = useState([]);
     const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
     const navigate = useNavigate();
@@ -22,29 +24,30 @@ function ListSpareParts() {
         stock: '',
     });
  // Simulando la carga de datos de una API
- useEffect(() => {
-
-    const fetchData = async () => {
-        try {
-            const response = await fetch('/api/piezas'); // API call to my Spring Boot backend
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            const data = await response.json();
-            console.log(data);
-            
-            setDatas(data);  
-        } catch (error) {
-            console.error('Error fetching data:', error);
+ const fetchData = async () => {
+    try {
+        const response = await fetch('/api/piezas'); // API call to my Spring Boot backend
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
         }
-    };
-
+        const data = await response.json();
+        console.log(data);
+        
+        setDatas(data);  
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+};
+ useEffect(() => {
     fetchData();
 }, []);
 
     const openEditPopup = (id) => {
         setFormData(id)
-        console.log(id)
+        console.log(id.idPieza)
+        console.log(id);
+        
+        setEditingPiezaId(id.idPieza);
         setIsEditPopupOpen(true);
     };
 
@@ -52,27 +55,58 @@ function ListSpareParts() {
         setIsEditPopupOpen(false);
     };
 
-    const handleEditSubmit = (e) => {
+    const handleEditSubmit = async (e) => {
         e.preventDefault();
+        console.log(editingPiezaId);
         console.log(formData);
-        //aqui debe ir la api que edita
-        
-        closeEditPopup();
-
-        navigate('/spareparts', {
-            replace: true,
-            state: { formData }
+    
+        // Call the API to edit the pieza
+        const response = await fetch(`/api/piezas/${editingPiezaId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
         });
-
-        setFormData({
-            piezaName: '',
-            piezaDescripcion: '',
-            stock: '',
-        });
+    
+        if (!response.ok) {
+            swal({ icon: "error", title: "No se pudo editar la pieza!" });
+        } else {
+            swal({ icon: "success", title: "Pieza editada con éxito" }).then(() => {
+                fetchData(); // Refresh or refetch data after successful edit
+            });
+    
+            closeEditPopup(); // Close the edit popup or modal
+    
+            
+            setFormData({
+                piezaName: '',
+                piezaDescripcion: '',
+                stock: '',
+            });
+        }
     };
+    
 
-    const handleDeleteSubmit = (id) => {
-        console.log(`Eliminando pieza: ${id}`);
+    const handleDeleteSubmit = async (row) => {
+        console.log(row.idPieza);
+        
+        console.log(`Eliminando pieza: ${row}`);
+
+        const idPieza = row.idPieza;
+        const response = await fetch(`/api/piezas/${idPieza}`, {
+            method: 'DELETE',
+        });
+    
+        if (response.ok) {
+            swal({ icon: 'success', title: 'Pieza eliminada con éxito' }).then(() => {
+                fetchData(); // Function to refetch or refresh your data
+            });
+        } else {
+            swal({ icon: 'error', title: 'No se pudo eliminar la pieza' });
+        }
+        
+    
     
     };
 

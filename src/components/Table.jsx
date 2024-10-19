@@ -8,9 +8,9 @@ function Table({ headers, datas, openEditPopup, handleDeleteSubmit, isColor }) {
                 <table className="min-w-full">
                     <thead className="bg-gray-50 dark:bg-gray-700">
                         <tr>
-                            {headers.map((header, index) => (
+                            {headers.map((header) => (
                                 <th
-                                    key={index}
+                                    key={header.key}
                                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
                                 >
                                     {header.label}
@@ -21,8 +21,8 @@ function Table({ headers, datas, openEditPopup, handleDeleteSubmit, isColor }) {
                     <tbody className="bg-white dark:bg-gray-800">
                         {datas.map((row) => (
                             <tr key={row.id}>
-                                {headers.slice(0, -2).map((header, index) => (
-                                    <td key={index} className="px-6 py-4 whitespace-normal text-sm text-gray-900 dark:text-white max-w-44 break-words">
+                                {headers.slice(0, -2).map((header) => (
+                                    <td key={header.key} className="px-6 py-4 whitespace-normal text-sm text-gray-900 dark:text-white max-w-44 break-words">
                                         {header.key === 'color' && isColor ? (
                                             <div
                                                 className="w-6 h-6 rounded-full border"
@@ -38,7 +38,10 @@ function Table({ headers, datas, openEditPopup, handleDeleteSubmit, isColor }) {
                                     <button onClick={() => openEditPopup(row)}><EditIcon /></button>
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                                    <DeleteIcon onClick={() => handleDeleteSubmit(row.id)} className="cursor-pointer transition-transform transform hover:scale-110 hover:text-red-500" />
+                                <DeleteIcon 
+                                    onClick={() => handleDeleteSubmit(row)} 
+                                    className="cursor-pointer transition-transform transform hover:scale-110 hover:text-red-500" 
+                                />
                                 </td>
                             </tr>
                         ))}
