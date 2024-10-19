@@ -19,47 +19,50 @@ function UserForm() {
     const handleSubmit = async(e) => {
         e.preventDefault();
         console.log(formData);
+    
         if (formData.password !== formData.confirmPassword) {
-            swal({icon:"error", title:"Las contraseñas deben coincidir"})
-            return
+            swal({icon:"error", title:"Las contraseñas deben coincidir"});
+            return;
         }
-        try{
-            const response = await fetch('api/users', {
+    
+        try {
+            const response = await fetch('/api/users', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(formData), //Sending the form info to the backend
-
+                body: JSON.stringify(formData), // Sending the form info to the backend
             });
-
+    
             if (response.ok) {
-                swal({ icon: "success", title: "Usuario creado con éxito" })
+                swal({ icon: "success", title: "Usuario creado con éxito" });
                 navigate('/users', {
                     replace: true,
                     state: { formData }
                 });
-        
+    
                 setFormData({
                     username: '',
                     password: '',
-                    confirmPassword:"",
+                    confirmPassword: "",
                     name: '',
                     lastName: '',
                     cellPhone: '',
                     address: '',
                     role: ''
                 });
-            }else {
-                throw new Error('Error en la creación del usuario');
+            } else if (response.status === 409) {  
+                const errorData = await response.text();  
+                swal({icon: "error", title: errorData});  
+            } else {
+                throw new Error("Error en la creación del usuario");
             }
-
-        }catch(error){
-            swal({icon:"error", title:"No se pudo ingresar el usuario"});
+    
+        } catch(error) {
+            swal({icon:"error", title: error.message});
         }
-
-        
     };
+    
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
