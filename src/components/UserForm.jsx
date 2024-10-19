@@ -8,6 +8,7 @@ function UserForm() {
     const [formData, setFormData] = useState({
         username: '',
         password: '',
+        confirmPassword:"",
         name: '',
         lastName: '',
         cellPhone: '',
@@ -18,7 +19,10 @@ function UserForm() {
     const handleSubmit = async(e) => {
         e.preventDefault();
         console.log(formData);
-
+        if (formData.password !== formData.confirmPassword) {
+            swal({icon:"error", title:"Las contraseñas deben coincidir"})
+            return
+        }
         try{
             const response = await fetch('api/users', {
                 method: 'POST',
@@ -30,9 +34,7 @@ function UserForm() {
             });
 
             if (response.ok) {
-                swal({ icon: "success", title: "Usuario creado con éxito" }).then(() => {
-                    window.location.reload(); 
-                });
+                swal({ icon: "success", title: "Usuario creado con éxito" })
                 navigate('/users', {
                     replace: true,
                     state: { formData }
@@ -41,6 +43,7 @@ function UserForm() {
                 setFormData({
                     username: '',
                     password: '',
+                    confirmPassword:"",
                     name: '',
                     lastName: '',
                     cellPhone: '',
@@ -91,6 +94,18 @@ function UserForm() {
                         type="password"
                         name="password"
                         value={formData.password}
+                        onChange={handleInputChange}
+                        placeholder="Ingrese su futura contraseña"
+                        className="mt-1 block w-full rounded-md shadow-sm dark:bg-slate-700 h-10 p-1 dark:text-white"
+                    />
+                </div>
+                <div>
+                    <label htmlFor="password" className="block text-lg font-medium text-gray-800 dark:text-slate-200">Confirmar contraseña</label>
+                    <InputForm
+                        id="confirmPassword"
+                        type="password"
+                        name="confirmPassword"
+                        value={formData.confirmPassword}
                         onChange={handleInputChange}
                         placeholder="Ingrese su futura contraseña"
                         className="mt-1 block w-full rounded-md shadow-sm dark:bg-slate-700 h-10 p-1 dark:text-white"

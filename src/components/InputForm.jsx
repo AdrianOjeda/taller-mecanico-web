@@ -10,7 +10,7 @@ function InputForm(props) {
                 name={props.name}
                 placeholder={props.placeholder}
                 required
-                value={props.value}
+                value={props.value || ''}
                 onChange={props.onChange}
                 disabled={props.disabled} 
             />
