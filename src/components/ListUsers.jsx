@@ -122,7 +122,7 @@ function ListUsers() {
                 fetchData();
             });
         }else{
-            swal({icon:'error', title:'No se pudo eliminar el suario'});
+            swal({icon:'error', title:'No se pudo eliminar el usario'});
         }
     };
 

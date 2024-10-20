@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 
 function ListCustomers() {
     const headers = [
-        { label: 'ID', key: 'id' },
+        { label: 'ID', key: 'idCliente' },
         { label: 'Nombre', key: 'firstName' },
         { label: 'Apellido', key: 'lastName' },
         { label: 'Dirección', key: 'address' },
@@ -105,8 +105,26 @@ function ListCustomers() {
         
     };
 
-    const handleDeleteSubmit = (id) => {
-        console.log(`Eliminando cliente con ID: ${id}`);
+    const handleDeleteSubmit = async(id) => {
+        console.log(`Eliminando cliente con ID: ${id.idCliente}`);
+        const idCliente = id.idCliente;
+        console.log(idCliente);
+        
+
+        try {
+            const response = await fetch(`/api/clientes/${idCliente}`,{
+                method:'DELETE',
+            }); //Delete endpoint
+
+            if(response.ok){
+                swal({icon:'success', title:'Cliente eliminado con exito'}).then(() => {
+                    fetchData();
+                });
+            }else swal({icon:'error', title:'No se pudo eliminar el cliente'});
+        } catch (error) {
+            console.error(error);
+            
+        }
     };
 
     const handleInputChange = (e) => {

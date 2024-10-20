@@ -12,7 +12,7 @@ function Customers() {
             <main className="flex-grow p-1 relative z-10">  
                 <div>
                 <div className="text-5xl dark:text-white font-medium text-center">
-                        <h1>Crear Cliente</h1>
+                        <h1>Agregar Cliente</h1>
                     </div>
                     <CustomersForm/>
                     <div>

@@ -13,7 +13,7 @@ function SpareParts() {
             <main className="flex-grow p-1 relative z-10">  
                 <div>
                 <div className="text-5xl dark:text-white font-medium text-center">
-                        <h1>Crear Pieza</h1>
+                        <h1>Agregar Pieza</h1>
                     </div>
                     <SparePartsForm/>
                     <div>
