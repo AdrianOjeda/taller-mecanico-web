@@ -10,7 +10,7 @@ export default function VehicleRepairForm() {
         marcaVehiculo: '',
         modeloVehiculo: '',
         matriculaVehiculo: '',
-        idVehiculo: null, 
+        vehiculo: { idVehiculo: null }, // Change here to include vehiculo object
         fechaInicio: new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0],
         fechaEntrega: '',
         falla: '',
@@ -54,7 +54,7 @@ export default function VehicleRepairForm() {
                     marcaVehiculo: data.marcaVehiculo,
                     modeloVehiculo: data.modeloVehiculo,
                     matriculaVehiculo: searchMatricula,
-                    idVehiculo: parseInt(data.idVehiculo, 10), // Save idVehiculo as integer
+                    vehiculo: { idVehiculo: parseInt(data.idVehiculo, 10) }, // Save idVehiculo in the vehiculo object
                 });
                 setError('');
             }
@@ -77,7 +77,6 @@ export default function VehicleRepairForm() {
         const { name, value } = e.target;
         const updatedPiezasUtilizadas = [...formData.piezasUtilizadas];
 
-        // Update the pieza ID or stock based on the field being changed
         if (name === 'idPieza') {
             updatedPiezasUtilizadas[index].idPieza = parseInt(value, 10) || null; // Save as integer
         } else if (name === 'stock') {
@@ -112,21 +111,19 @@ export default function VehicleRepairForm() {
 
     const handleSubmit = async(e) => {
         e.preventDefault();
-        if (!formData.marcaVehiculo || !formData.modeloVehiculo || !formData.matriculaVehiculo || formData.idVehiculo === null) {
+        if (!formData.marcaVehiculo || !formData.modeloVehiculo || !formData.matriculaVehiculo || formData.vehiculo.idVehiculo === null) {
             setError("Debe buscar un vehículo antes de guardar la reparación.");
             return;
         }
     
         console.log(formData);
         try {
-            
             const response = await fetch("/api/reparaciones",{
                 method:'POST',
                 headers:{
                     'Content-Type':'application/json',
                 },
-                body: JSON.stringify(formData),
-  
+                body: JSON.stringify(formData), // Send the complete formData including the vehiculo object
             });
             if(!response.ok){
                 swal({icon:'error', title:'No se pudo agregar la reparacion'});
@@ -136,15 +133,13 @@ export default function VehicleRepairForm() {
                         replace: true,
                         state: { formData }
                     });
-                
                 });
-                
                 
                 setFormData({
                     marcaVehiculo: '',
                     modeloVehiculo: '',
                     matriculaVehiculo: '',
-                    idVehiculo: null,
+                    vehiculo: { idVehiculo: null }, // Reset the vehiculo object
                     fechaInicio: new Date().toISOString().split('T')[0],
                     fechaEntrega: '',
                     falla: '',
@@ -152,11 +147,8 @@ export default function VehicleRepairForm() {
                 });
                 setError('');
             }
-
-
         } catch (error) {
             console.log(error);
-            
         }
     };
     return (
