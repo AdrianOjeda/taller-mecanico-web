@@ -1,160 +1,187 @@
-import React, { useState , useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import InputForm from './InputForm';
 import { useNavigate } from "react-router-dom";
 
-function VeihcleForm() {
+function VehicleForm() {
     const [customers, setCustomers] = useState([]);
     const [formData, setFormData] = useState({
-        cliente: '',
-        marca: '',
-        modelo: '',
-        matricula: '',
-        fecha: '',
-        color: '',
-        notas:''
-    })
+        idCliente: 0,
+        marcaVehiculo: '',
+        modeloVehiculo: '',
+        matriculaVehiculo: '',
+        fechaIngreso: '',
+        colorVehiculo: '',
+        notasVehiculo: ''
+    });
 
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
-            // Simulando una llamada a API
-            const response = [
-                {id:1, nombre: "Christian" },
-                {id:4, nombre: "Pedro" }
-            ];
-            setCustomers(response);
+            const response = await fetch("/api/clientes");
+            if (response.ok) {
+                const data = await response.json();
+                setCustomers(data);
+            } else {
+                throw new Error("Couldn't fetch client data");
+            }
         };
 
         fetchData();
 
-        // Establecer fecha actual al montar el componente
-        const currentDate = new Date().toISOString().split('T')[0]; // Formato YYYY-MM-DD
+        // Set the current date
+        const currentDate = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
         setFormData((prevFormData) => ({
             ...prevFormData,
-            fecha: currentDate
+            fechaIngreso: currentDate // Use fechaIngreso instead of fecha
         }));
     }, []);
 
-    const handleSubmit=(e) => {
-        e.preventDefault();
-        console.log(formData)
-
-        navigate('/vehicles', {
-            replace: true,
-            state: { formData }
-        });
-
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
         setFormData({
-            cliente: '',
-            marca: '',
-            modelo: '',
-            matricula: '',
-            fecha: new Date().toISOString().split('T')[0],
-            color: '',
-            notas: ''
-        });
-    }
-
-        const handleInputChange = (e) => {
-            const { name, value } = e.target;
-            setFormData({
-                ...formData,
-            [name]: value,
+            ...formData,
+            [name]: name === 'idCliente' ? parseInt(value) : value, // Adjusted for idCliente
         });
     };
 
-    return(
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        console.log(formData);
+
+        const adjustedFormData = {
+            ...formData,
+            cliente: {
+                idCliente: formData.idCliente
+            }
+        };
+        console.log(adjustedFormData);
+        
+        try {
+            const response = await fetch("/api/vehiculos", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(adjustedFormData),
+            });
+
+            if (response.ok) {
+                swal({icon:'success', title:'Vehiculo agregado con exito'}).then(()=>{
+                    navigate("/vehicles"); // Adjust the navigation path as needed
+                })
+
+                setFormData({
+                    idCliente: 0,
+                    marcaVehiculo: '',
+                    modeloVehiculo: '',
+                    matriculaVehiculo: '',
+                    fechaIngreso: '',
+                    colorVehiculo: '',
+                    notasVehiculo: ''                        
+                });
+                
+            } else {
+                swal({icon:'error', title:'No se pudo agregar el vehiculo'})
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    return (
         <form
             className="w-full mx-auto p-6 bg-white dark:bg-slate-800 rounded-lg shadow-md"
-            onSubmit={handleSubmit} 
+            onSubmit={handleSubmit}
         >
             <div className="space-y-4">
                 <div>
-                <label htmlFor="customer" className="block text-lg font-medium text-gray-800 dark:text-slate-200">Cliente</label>
-                <select
+                    <label htmlFor="cliente" className="block text-lg font-medium text-gray-800 dark:text-slate-200">Cliente</label>
+                    <select
                         id="cliente"
                         className="h-10 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring dark:bg-slate-700 dark:text-white"
-                        value={formData.cliente}
-                        name="cliente"
+                        value={formData.idCliente}
+                        name="idCliente" // Use idCliente instead of cliente
                         onChange={handleInputChange}
                         required
                     >
-                        <option value="" >  Selecciona un cliente</option>
-                        {customers.map((customer,index)=>(
-                            <option value= {customer.id} key={index}>{customer.nombre}</option>
+                        <option value="">Selecciona un cliente</option>
+                        {customers.map((customer) => (
+                            <option value={customer.idCliente} key={customer.idCliente}>
+                                {customer.firstName} {customer.lastName}
+                            </option>
                         ))}
                     </select>
                 </div>
                 <div>
-                    <label htmlFor="brand" className="block text-lg font-medium text-gray-800 dark:text-slate-200">Marca</label>
+                    <label htmlFor="marca" className="block text-lg font-medium text-gray-800 dark:text-slate-200">Marca</label>
                     <InputForm
                         id="marca"
                         type="text"
                         placeholder="Ingrese la marca"
-                        name="marca"
-                        value={formData.marca}
-                        onChange={handleInputChange} 
+                        name="marcaVehiculo"
+                        value={formData.marcaVehiculo}
+                        onChange={handleInputChange}
                         className="mt-1 block w-full rounded-md shadow-sm dark:bg-slate-700 h-10 p-1 dark:text-white"
                     />
                 </div>
                 <div>
-                    <label htmlFor="model" className="block text-lg font-medium text-gray-800 dark:text-slate-200">Modelo</label>
+                    <label htmlFor="modelo" className="block text-lg font-medium text-gray-800 dark:text-slate-200">Modelo</label>
                     <InputForm
                         id="modelo"
                         type="text"
                         placeholder="Ingrese el modelo"
-                        name="modelo"
-                        value={formData.modelo}
-                        onChange={handleInputChange} 
+                        name="modeloVehiculo"
+                        value={formData.modeloVehiculo}
+                        onChange={handleInputChange}
                         className="mt-1 block w-full rounded-md shadow-sm dark:bg-slate-700 h-10 p-1 dark:text-white"
                     />
                 </div>
                 <div>
-                    <label htmlFor="matriculate" className="block text-lg font-medium text-gray-800 dark:text-slate-200">Matriculas</label>
+                    <label htmlFor="matricula" className="block text-lg font-medium text-gray-800 dark:text-slate-200">Matricula</label>
                     <InputForm
                         id="matricula"
                         type="text"
                         placeholder="Ingrese la matricula"
-                        name="matricula"
-                        value={formData.matricula}
-                        onChange={handleInputChange} 
+                        name="matriculaVehiculo"
+                        value={formData.matriculaVehiculo}
+                        onChange={handleInputChange}
                         className="mt-1 block w-full rounded-md shadow-sm dark:bg-slate-700 h-10 p-1 dark:text-white"
                     />
                 </div>
                 <div>
-                    <label htmlFor="fecha" className="block text-lg font-medium text-gray-800 dark:text-slate-200">Fecha de registro</label>
+                    <label htmlFor="fechaIngreso" className="block text-lg font-medium text-gray-800 dark:text-slate-200">Fecha de registro</label>
                     <InputForm
-                        id="fecha"
+                        id="fechaIngreso"
                         type="text"
-                        name="fecha"
-                        value={formData.fecha}
-                        onChange={handleInputChange} 
+                        name="fechaIngreso"
+                        value={formData.fechaIngreso}
+                        onChange={handleInputChange}
                         className="mt-1 block w-full rounded-md shadow-sm cursor-not-allowed dark:bg-slate-700 h-10 p-1 dark:text-white"
                         disabled={true}
                     />
                 </div>
                 <div>
-                    <label htmlFor="color" className="block text-lg font-medium text-gray-800 dark:text-slate-200">color</label>
+                    <label htmlFor="color" className="block text-lg font-medium text-gray-800 dark:text-slate-200">Color</label>
                     <InputForm
                         id="color"
                         type="color"
                         placeholder="Ingrese descripcion del color"
-                        name="color"
-                        value={formData.color}
-                        onChange={handleInputChange} 
+                        name="colorVehiculo"
+                        value={formData.colorVehiculo}
+                        onChange={handleInputChange}
                         className="mt-1 block w-full rounded-md shadow-sm dark:bg-slate-700 h-10 p-1 dark:text-white"
                     />
                 </div>
                 <div>
-                    <label htmlFor="note" className="block text-lg font-medium text-gray-800 dark:text-slate-200">Notas</label>
+                    <label htmlFor="notas" className="block text-lg font-medium text-gray-800 dark:text-slate-200">Notas</label>
                     <InputForm
                         id="notas"
                         type="text"
                         placeholder="Ingrese nota sobre el vehiculo"
-                        name="notas"
-                        value={formData.notas}
-                        onChange={handleInputChange} 
+                        name="notasVehiculo"
+                        value={formData.notasVehiculo}
+                        onChange={handleInputChange}
                         className="mt-1 block w-full rounded-md shadow-sm dark:bg-slate-700 h-10 p-1 dark:text-white"
                     />
                 </div>
@@ -166,7 +193,7 @@ function VeihcleForm() {
                 Enviar
             </button>
         </form>
-    )
+    );
 }
 
-export default VeihcleForm;
+export default VehicleForm;

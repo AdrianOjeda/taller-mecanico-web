@@ -32,16 +32,34 @@ function ListVehicles() {
  // Simulando la carga de datos de una API
     useEffect(() => {
 
-        const fetchData = async () => {
-            const response = [
-                { id: 1, cliente: 'Jhovany', marca: 'Nissan', modelo: 'Versa', matricula: 'MJDH93', fecha: '03/10/2024', color: '#f2a223', notas: 'El carro presenta un impacto de arma de fuego' },
-                
-            ];
-            setDatas(response);
-        };
+        
 
         fetchData();
     }, []);
+
+    const fetchData = async () => {
+        try {
+            const response = await fetch("/api/vehiculos");
+            if (response.ok) {
+                const data = await response.json();
+                // Map the response to include the client info in the desired format
+                const mappedData = data.map(vehiculo => ({
+                    id: vehiculo.idVehiculo,
+                    cliente: vehiculo.cliente ? `${vehiculo.cliente.firstName} ${vehiculo.cliente.lastName}` : 'N/A',
+                    marca: vehiculo.marcaVehiculo,
+                    modelo: vehiculo.modeloVehiculo,
+                    matricula: vehiculo.matriculaVehiculo,
+                    fecha: vehiculo.fechaIngreso,
+                    notas: vehiculo.notasVehiculo,
+                    color: vehiculo.colorVehiculo
+                }));
+                setDatas(mappedData);
+                
+            }
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    };
 
     const openEditPopup = (id) => {
         setFormData(id)
