@@ -108,7 +108,7 @@ function ListVehicles() {
             });
             if (response.ok) {
                 // Update local state
-                swal({icond:'success', title:'Vehiculo editado con exito'}).then(()=>{
+                swal({icon:'success', title:'Vehiculo editado con exito'}).then(()=>{
                     fetchData();
                 });
                 setDatas(prevDatas => 
@@ -200,20 +200,7 @@ function ListVehicles() {
                                         onChange={handleInputChange}
                                     />
                                 </div>
-                                <div className="mb-4">
-                                    <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="matricula">
-                                        Matriculas
-                                    </label>
-                                    <InputForm
-                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-900 dark:text-white leading-tight focus:outline-none focus:shadow-outline"
-                                        id="matricula"
-                                        type="text"
-                                        name="matriculaVehiculo"
-                                        placeholder="Matricula"
-                                        value={formData.matriculaVehiculo}
-                                        onChange={handleInputChange}
-                                    />
-                                </div>
+                                
                                 <div className="mb-4 ">
                                     <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="color">
                                         Color

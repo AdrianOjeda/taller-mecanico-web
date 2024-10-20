@@ -1,78 +1,108 @@
 import React, { useState, useEffect } from 'react';
 import InputForm from './InputForm';
 import { useNavigate } from "react-router-dom";
+import swal from 'sweetalert'; 
 
 export default function VehicleRepairForm() {
     const navigate = useNavigate();
     const [searchMatricula, setSearchMatricula] = useState('');
     const [formData, setFormData] = useState({
-        marca: '',
-        modelo: '',
-        matricula: '',
-        Inicio: new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0], 
-        fin: '',
+        marcaVehiculo: '',
+        modeloVehiculo: '',
+        matriculaVehiculo: '',
+        idVehiculo: null, 
+        fechaInicio: new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0],
+        fechaEntrega: '',
         falla: '',
-        piezasUtilizadas: [{ pieza: '', cantidad: 1 }],
+        piezasUtilizadas: [{ idPieza: null, stock: 1 }],
     });
     const [piezas, setPiezas] = useState([]);
-    const [error, setError] = useState('');  
+    const [error, setError] = useState('');
+
     useEffect(() => {
         const fetchPiezas = async () => {
-            // Simulando una llamada a API para obtener piezas y su stock
-            const response = [
-                { id: 1, nombre: "Motor", stock: 10 },
-                { id: 2, nombre: "Transmisión", stock: 5 },
-                { id: 3, nombre: "Frenos", stock: 8 },
-                { id: 4, nombre: "Suspensión", stock: 12 }
-            ];
-            setPiezas(response);
+            try {
+                const response = await fetch("/api/piezas", {
+                    method: 'GET',
+                });
+                if (!response.ok) {
+                    console.error("Network error");
+                } else {
+                    const data = await response.json();
+                    setPiezas(data);
+                }
+            } catch (error) {
+                console.error("Couldn't fetch piezas");
+            }
         };
 
         fetchPiezas();
     }, []);
 
-    const handleSearch = (e) => {
+    const handleSearch = async (e) => {
         e.preventDefault();
-        // Validar si la matrícula fue ingresada antes de realizar la búsqueda
-        if (!searchMatricula) {
-            setError("Debe ingresar una matrícula para buscar el vehículo.");
-            return;
+        try {
+            const response = await fetch(`/api/vehiculos/searchByMatricula/${searchMatricula}`, {
+                method: 'GET',
+            });
+            if (!response.ok) {
+                swal({ icon: 'error', title: 'No existe un vehículo con esa matrícula' });
+            } else {
+                const data = await response.json();
+                setFormData({
+                    ...formData,
+                    marcaVehiculo: data.marcaVehiculo,
+                    modeloVehiculo: data.modeloVehiculo,
+                    matriculaVehiculo: searchMatricula,
+                    idVehiculo: parseInt(data.idVehiculo, 10), // Save idVehiculo as integer
+                });
+                setError('');
+            }
+        } catch (error) {
+            console.error(error);
         }
-
-        // Simulación de búsqueda exitosa
-        setFormData({
-            ...formData,
-            marca: 'Marca Encontrada',
-            modelo: 'Modelo Encontrado',
-            matricula: searchMatricula,
-        });
-        setError(''); // Limpiar errores al buscar con éxito
     };
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+        if (name === 'fechaEntrega' && value < formData.fechaInicio) {
+            setError('La fecha de entrega no puede ser anterior a la fecha de inicio.');
+        } else {
+            setFormData({ ...formData, [name]: value });
+            setError('');
+        }
     };
 
     const handlePiezaChange = (index, e) => {
         const { name, value } = e.target;
         const updatedPiezasUtilizadas = [...formData.piezasUtilizadas];
-        updatedPiezasUtilizadas[index] = { ...updatedPiezasUtilizadas[index], [name]: value };
+
+        // Update the pieza ID or stock based on the field being changed
+        if (name === 'idPieza') {
+            updatedPiezasUtilizadas[index].idPieza = parseInt(value, 10) || null; // Save as integer
+        } else if (name === 'stock') {
+            const selectedPieza = piezas.find(p => p.idPieza === updatedPiezasUtilizadas[index].idPieza);
+            if (selectedPieza && parseInt(value, 10) > selectedPieza.stock) {
+                setError('La cantidad no puede ser mayor que el stock disponible.');
+                return;
+            }
+            updatedPiezasUtilizadas[index].stock = parseInt(value, 10) || 1; // Save as integer
+        }
+
         setFormData({ ...formData, piezasUtilizadas: updatedPiezasUtilizadas });
+        setError('');
     };
 
     const agregarPieza = () => {
-        // Validar que primero se haya buscado el vehículo antes de agregar piezas
-        if (!formData.matricula) {
+        if (!formData.matriculaVehiculo) {
             setError("Debe buscar un vehículo antes de agregar piezas.");
             return;
         }
-
         setFormData({
             ...formData,
-            piezasUtilizadas: [...formData.piezasUtilizadas, { pieza: '', cantidad: 1 }],
+            piezasUtilizadas: [...formData.piezasUtilizadas, { idPieza: null, stock: 1 }],
         });
-        setError(''); // Limpiar errores al agregar piezas correctamente
+        setError('');
     };
 
     const quitarPieza = (index) => {
@@ -80,37 +110,55 @@ export default function VehicleRepairForm() {
         setFormData({ ...formData, piezasUtilizadas: updatedPiezasUtilizadas });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async(e) => {
         e.preventDefault();
-
-        // Validar que se haya buscado el vehículo antes de enviar
-        if (!formData.marca || !formData.modelo || !formData.matricula) {
+        if (!formData.marcaVehiculo || !formData.modeloVehiculo || !formData.matriculaVehiculo || formData.idVehiculo === null) {
             setError("Debe buscar un vehículo antes de guardar la reparación.");
             return;
         }
-
+    
         console.log(formData);
-        navigate('/repairs', {
-            replace: true,
-            state: { formData }
-        });
-        setFormData(
-            {
-                marca: '',
-                modelo: '',
-                matricula: '',
-                Inicio: new Date().toISOString().split('T')[0],
-                fin: '',
-                falla: '',
-                piezasUtilizadas: [{ pieza: '', cantidad: 1 }],
+        try {
+            
+            const response = await fetch("/api/reparaciones",{
+                method:'POST',
+                headers:{
+                    'Content-Type':'application/json',
+                },
+                body: JSON.stringify(formData),
+  
+            });
+            if(!response.ok){
+                swal({icon:'error', title:'No se pudo agregar la reparacion'});
+            }else{
+                swal({icon:'success', title:'Reparacion agregada con exito'}).then(()=>{
+                    navigate('/repairs', {
+                        replace: true,
+                        state: { formData }
+                    });
+                
+                });
+                
+                
+                setFormData({
+                    marcaVehiculo: '',
+                    modeloVehiculo: '',
+                    matriculaVehiculo: '',
+                    idVehiculo: null,
+                    fechaInicio: new Date().toISOString().split('T')[0],
+                    fechaEntrega: '',
+                    falla: '',
+                    piezasUtilizadas: [{ idPieza: null, stock: 1 }],
+                });
+                setError('');
             }
-        )
 
 
-        setError(''); 
-        // Aquí iría la lógica para enviar los datos
+        } catch (error) {
+            console.log(error);
+            
+        }
     };
-
     return (
         <section className="w-full mx-auto p-6 bg-white dark:bg-slate-800 rounded-lg shadow-md">
             <div className="container px-6 py-8 mx-auto">
@@ -148,8 +196,8 @@ export default function VehicleRepairForm() {
                                     className="h-10 mt-1 block w-full rounded-md shadow-sm dark:bg-slate-700 dark:text-white" 
                                     id="marca" 
                                     type="text" 
-                                    name="marca"
-                                    value={formData.marca}
+                                    name="marcaVehiculo"
+                                    value={formData.marcaVehiculo}
                                     onChange={handleInputChange}
                                     disabled={true}
                                 />
@@ -162,8 +210,8 @@ export default function VehicleRepairForm() {
                                     className="h-10 mt-1 block w-full rounded-md shadow-sm dark:bg-slate-700 dark:text-white" 
                                     id="modelo" 
                                     type="text" 
-                                    name="modelo"
-                                    value={formData.modelo}
+                                    name="modeloVehiculo"
+                                    value={formData.modeloVehiculo}
                                     onChange={handleInputChange}
                                     disabled={true}
                                 />
@@ -176,8 +224,8 @@ export default function VehicleRepairForm() {
                                     className="h-10 mt-1 block w-full rounded-md shadow-sm dark:bg-slate-700 dark:text-white" 
                                     id="matricula" 
                                     type="text" 
-                                    name="matricula"
-                                    value={formData.matricula}
+                                    name="matriculaVehiculo"
+                                    value={formData.matriculaVehiculo}
                                     onChange={handleInputChange}
                                     disabled={true}
                                 />
@@ -190,8 +238,8 @@ export default function VehicleRepairForm() {
                                     className="h-10 mt-1 block w-full rounded-md shadow-sm dark:bg-slate-700 dark:text-white" 
                                     id="Inicio" 
                                     type="date" 
-                                    name="Inicio"
-                                    value={formData.Inicio}
+                                    name="fechaInicio"
+                                    value={formData.fechaInicio}
                                     onChange={handleInputChange}
                                     disabled={true}
                                 />
@@ -204,8 +252,8 @@ export default function VehicleRepairForm() {
                                     className="h-10 mt-1 block w-full rounded-md shadow-sm dark:bg-slate-700 dark:text-white" 
                                     id="fin" 
                                     type="date" 
-                                    name="fin"
-                                    value={formData.fin}
+                                    name="fechaEntrega"
+                                    value={formData.fechaEntrega}
                                     onChange={handleInputChange}
                                 />
                             </div>
@@ -235,14 +283,14 @@ export default function VehicleRepairForm() {
                                             <select
                                                 className="h-10 mt-1 block w-full rounded-md shadow-sm dark:bg-slate-700 dark:text-white"
                                                 id={`pieza-${index}`}
-                                                name="pieza"
-                                                value={piezaUtilizada.pieza}
+                                                name="idPieza" // Changed from 'pieza' to 'idPieza'
+                                                value={piezaUtilizada.idPieza || ""} // Ensure you're using idPieza
                                                 onChange={(e) => handlePiezaChange(index, e)}
                                             >
                                                 <option value="">Seleccione una pieza</option>
                                                 {piezas.map((pieza) => (
-                                                    <option key={pieza.id} value={pieza.id.toString()}>
-                                                        {pieza.nombre} (Stock: {pieza.stock})
+                                                    <option key={pieza.idPieza} value={pieza.idPieza.toString()}>
+                                                        {pieza.piezaName} (Stock: {pieza.stock})
                                                     </option>
                                                 ))}
                                             </select>
@@ -253,13 +301,13 @@ export default function VehicleRepairForm() {
                                             </label>
                                             <InputForm
                                                 className="h-10 mt-1 block w-full rounded-md shadow-sm dark:bg-slate-700 dark:text-white"
-                                                id={`cantidad-${index}`}
                                                 type="number"
-                                                name="cantidad"
-                                                min="1"
-                                                max={piezas.find(p => p.id.toString() === piezaUtilizada.pieza)?.stock || 1}
-                                                value={piezaUtilizada.cantidad}
+                                                name="stock" // Make sure to keep this as 'stock'
+                                                value={piezaUtilizada.stock || 1} // Ensure default value to prevent NaN
                                                 onChange={(e) => handlePiezaChange(index, e)}
+                                                min="1"
+                                                max={piezas.find(p => p.idPieza === piezaUtilizada.idPieza)?.stock || 1}
+                                                placeholder="Cantidad"
                                             />
                                         </div>
                                         <div className="flex items-end">
@@ -274,7 +322,6 @@ export default function VehicleRepairForm() {
                                     </div>
                                 </div>
                             ))}
-
                             <div className="md:col-span-2">
                                 <button
                                     type="button"
@@ -295,6 +342,6 @@ export default function VehicleRepairForm() {
                     </form>
                 </div>
             </div>
-        </section>
+        </section> 
     );
 }
