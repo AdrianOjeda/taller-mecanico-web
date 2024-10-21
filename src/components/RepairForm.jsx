@@ -29,6 +29,9 @@ export default function VehicleRepairForm() {
                     console.error("Network error");
                 } else {
                     const data = await response.json();
+
+                    console.log(data);
+                    
                     setPiezas(data);
                 }
             } catch (error) {
