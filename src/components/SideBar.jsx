@@ -11,6 +11,8 @@ function SideBar() {
         setIsOpen(true);
     };
 
+    const username = localStorage.getItem("user")
+    const rol = localStorage.getItem("tipo")
     const closeSideBar = () => {
         setIsOpen(false);
     };
@@ -60,7 +62,6 @@ function SideBar() {
                                 />
                             </li>
                         )}
-
                         <li className="dark:text-white flex items-center">
                             <h1>Modo oscuro</h1>
                             <SwitchTheme />
@@ -72,37 +73,90 @@ function SideBar() {
                                 });
                             }}/>
                         </li>
+                        <h1 className="dark:text-white">Hola, {username}</h1>
+                        <h2 className="dark:text-white">{rol}</h2>
+                        {rol === "ADMINISTRADOR" && (
+                            <>
 
-                        <li>
-                            <Link to="/users" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                                <span className="ms-3">Usuarios</span>
-                            </Link>
-                        </li>
-                        <li>
-                            <Link to='/customers' className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                                <span className="ms-3">Clientes</span>
-                            </Link>
-                        </li>
-                        <li>
-                            <Link to='/vehicles' className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                                <span className="ms-3">Vehiculos</span>
-                            </Link>
-                        </li>
-                        <li>
+                            <li>
+                                <Link to="/users" className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                                    <span className="ms-3">Usuarios</span>
+                                </Link>
+                            </li>  
+                            <li>
+                                <Link to='/customers' className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                                    <span className="ms-3">Clientes</span>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to='/vehicles' className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                                    <span className="ms-3">Vehiculos</span>
+                                </Link>
+                            </li>
+                            <li>
                             <Link to='/repairs' className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
                                 <span className="ms-3">Reparaciones</span>
                             </Link>
-                        </li>
-                        <li>
-                            <Link to='/spareparts' className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                                <span className="ms-3">Piezas</span>
+                            </li>
+                            <li>
+                                <Link to='/spareparts' className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                                    <span className="ms-3">Piezas</span>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to='/charts' className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                                    <span className="ms-3">Estadisticas</span>
+                                </Link>
+                            </li>
+                            </>
+                        )}
+                        {rol === "GERENTE"&&(
+                            <>
+                            <li>
+                                <Link to='/customers' className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                                    <span className="ms-3">Clientes</span>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to='/vehicles' className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                                    <span className="ms-3">Vehiculos</span>
+                                </Link>
+                            </li>
+                            <li>
+                            <Link to='/repairs' className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                                <span className="ms-3">Reparaciones</span>
                             </Link>
-                        </li>
-                        <li>
-                            <Link to='/charts' className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
-                                <span className="ms-3">Estadisticas</span>
+                            </li>
+                            <li>
+                                <Link to='/spareparts' className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                                    <span className="ms-3">Piezas</span>
+                                </Link>
+                            </li>
+                            <li>
+                                <Link to='/charts' className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                                    <span className="ms-3">Estadisticas</span>
+                                </Link>
+                            </li>
+                            </>
+                        )}
+                        {rol === "MECANICO"&&(
+                            <>
+                            <li>
+                            <Link to='/repairs' className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                                <span className="ms-3">Reparaciones</span>
                             </Link>
-                        </li>
+                            </li>
+                            <li>
+                                <Link to='/spareparts' className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                                    <span className="ms-3">Piezas</span>
+                                </Link>
+                            </li>
+
+                            </>
+                        )}
+                        
+                        
+                        
                     </ul>
                 </div>
             </aside>
