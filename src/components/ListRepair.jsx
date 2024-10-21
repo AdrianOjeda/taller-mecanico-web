@@ -3,6 +3,7 @@ import InputForm from "./InputForm";
 import Table from "./Table";
 import MobileTable from "./MobileTable";
 import { useNavigate } from "react-router-dom";
+import swal from 'sweetalert';
 
 function ListRepair() {
     const headers = [
@@ -14,75 +15,125 @@ function ListRepair() {
         { label: 'Inicio', key: 'fechaInicio' },
         { label: 'Fin', key: 'fechaEntrega' },
         { label: 'Falla', key: 'falla' },
-        { label: 'Editar', key: 'editar' }, 
-        { label: 'Eliminar', key: 'eliminar' } 
+        { label: 'Editar', key: 'editar' },
+        { label: 'Eliminar', key: 'eliminar' }
     ];
 
+    const [editingRepairId, setEditingRepairId] = useState(null);
     const [datas, setDatas] = useState([]);
     const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         fechaEntrega: '',
         falla: '',
-        status: ''
+        
     });
 
     useEffect(() => {
-        const fetchData = async () => {
+        fetchData();
+    }, []);
+
+    const fetchData = async () => {
+        setLoading(true);
+        try {
             const response = await fetch('/api/reparaciones', {
                 method: 'GET',
             });
 
             if (!response.ok) {
-                console.error("Couldn't fetch reparaciones");
-            } else {
-                const data = await response.json();
-                
-                // Transform the fetched data to match the table structure
-                const transformedData = data.map(reparacion => ({
-                    idReparacion: reparacion.idReparacion,
-                    firstName: reparacion.vehiculo.cliente.firstName,
-                    marcaVehiculo: reparacion.vehiculo.marcaVehiculo,
-                    modeloVehiculo: reparacion.vehiculo.modeloVehiculo,
-                    matriculaVehiculo: reparacion.vehiculo.matriculaVehiculo,
-                    fechaInicio: reparacion.fechaInicio,
-                    fechaEntrega: reparacion.fechaEntrega,
-                    falla: reparacion.falla
-                }));
-                
-                setDatas(transformedData); // Set the transformed data to state
+                throw new Error("Couldn't fetch reparaciones");
             }
-        };
 
-        fetchData();
-    }, []);
+            const data = await response.json();
+            const transformedData = data.map(reparacion => ({
+                idReparacion: reparacion.idReparacion,
+                firstName: reparacion.vehiculo.cliente.firstName,
+                marcaVehiculo: reparacion.vehiculo.marcaVehiculo,
+                modeloVehiculo: reparacion.vehiculo.modeloVehiculo,
+                matriculaVehiculo: reparacion.vehiculo.matriculaVehiculo,
+                fechaInicio: reparacion.fechaInicio,
+                fechaEntrega: reparacion.fechaEntrega,
+                falla: reparacion.falla
+            }));
 
-    const openEditPopup = (id) => {
-        setFormData(id);
+            setDatas(transformedData);
+        } catch (error) {
+            console.error(error);
+            swal({ icon: 'error', title: 'Error fetching data' });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const openEditPopup = (reparacion) => {
+        setFormData({
+            fechaEntrega: reparacion.fechaEntrega,
+            falla: reparacion.falla,
+
+        });
+        setEditingRepairId(reparacion.idReparacion);
         setIsEditPopupOpen(true);
     };
 
     const closeEditPopup = () => {
         setIsEditPopupOpen(false);
+        resetForm();
     };
 
-    const handleEditSubmit = (e) => {
-        e.preventDefault();
-        // Here goes the API call to edit
-        closeEditPopup();
-        navigate('/repairs', {
-            replace: true,
-            state: { formData }
-        });
+    const resetForm = () => {
         setFormData({
-            fin: '',
+            fechaEntrega: '',
             falla: '',
-            status: ''
+            
         });
     };
 
-    const handleDeleteSubmit = (userId) => {
-        console.log(`Eliminando reparacion con ID: ${userId}`);
+    const handleEditSubmit = async (e) => {
+        e.preventDefault();
+        console.log(formData);
+        
+        try {
+            const response = await fetch(`/api/reparaciones/${editingRepairId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            if (response.ok) {
+                swal({ icon: 'success', title: 'Reparación editada con éxito' }).then(() => {
+                    fetchData();
+                });
+                closeEditPopup();
+            } else {
+                throw new Error('No se pudo editar la reparación');
+            }
+        } catch (error) {
+            console.error(error);
+            swal({ icon: 'error', title: error.message });
+        }
+    };
+
+    const handleDeleteSubmit = async (reparacion) => {
+        console.log(`Eliminando reparación con ID: ${reparacion.idReparacion}`);
+        try {
+            const response = await fetch(`/api/reparaciones/${reparacion.idReparacion}`, {
+                method: 'DELETE',
+            });
+
+            if (response.ok) {
+                swal({ icon: 'success', title: 'Reparación eliminada con éxito' }).then(() => {
+                    fetchData();
+                });
+            } else {
+                throw new Error('No se pudo eliminar la reparación');
+            }
+        } catch (error) {
+            console.error(error);
+            swal({ icon: 'error', title: error.message });
+        }
     };
 
     const handleInputChange = (e) => {
@@ -95,31 +146,35 @@ function ListRepair() {
 
     return (
         <div className="h-auto">
-            <section className="flex bg-gray-200 dark:bg-slate-600 rounded-lg w-auto">
-                <div className="container px-6 py-8 mx-auto">
-                    <h3 className="text-3xl font-medium text-gray-700 dark:text-white">Reparaciones</h3>
-                    <div className="flex flex-col mt-8">
-                        <Table headers={headers} datas={datas} openEditPopup={openEditPopup} handleDeleteSubmit={handleDeleteSubmit} />
-                        <MobileTable datas={datas} handleDeleteSubmit={handleDeleteSubmit} openEditPopup={openEditPopup} />
+            {loading ? (
+                <p>Cargando...</p> // Loading indicator
+            ) : (
+                <section className="flex bg-gray-200 dark:bg-slate-600 rounded-lg w-auto">
+                    <div className="container px-6 py-8 mx-auto">
+                        <h3 className="text-3xl font-medium text-gray-700 dark:text-white">Reparaciones</h3>
+                        <div className="flex flex-col mt-8">
+                            <Table headers={headers} datas={datas} openEditPopup={openEditPopup} handleDeleteSubmit={handleDeleteSubmit} />
+                            <MobileTable datas={datas} handleDeleteSubmit={handleDeleteSubmit} openEditPopup={openEditPopup} />
+                        </div>
                     </div>
-                </div>
-            </section>
+                </section>
+            )}
             {isEditPopupOpen && (
                 <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-auto w-full flex justify-center items-center" id="my-modal">
                     <div className="relative mx-auto p-5 border w-full max-w-lg shadow-lg rounded-md bg-white dark:bg-gray-800">
                         <div className="mt-3 text-center">
-                            <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">Editar vehiculo</h3>
+                            <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">Editar Reparación</h3>
                             <form onSubmit={handleEditSubmit} className="mt-2 text-left">
                                 <div className="mb-4">
                                     <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="falla">
                                         Falla
                                     </label>
-                                    <InputForm 
-                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-900 dark:text-white leading-tight focus:outline-none focus:shadow-outline" 
-                                        id="color" 
-                                        type="text" 
-                                        name="color"
-                                        placeholder="Color"
+                                    <InputForm
+                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-900 dark:text-white leading-tight focus:outline-none focus:shadow-outline"
+                                        id="falla"
+                                        type="text"
+                                        name="falla"
+                                        placeholder="Falla"
                                         value={formData.falla}
                                         onChange={handleInputChange}
                                     />
@@ -128,26 +183,25 @@ function ListRepair() {
                                     <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="fin">
                                         Fin
                                     </label>
-                                    <InputForm 
-                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-900 dark:text-white leading-tight focus:outline-none focus:shadow-outline" 
-                                        id="fin" 
-                                        type="date" 
-                                        name="fin"
-                                        value={formData.fin}
+                                    <InputForm
+                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-900 dark:text-white leading-tight focus:outline-none focus:shadow-outline"
+                                        id="fin"
+                                        type="date"
+                                        name="fechaEntrega"
+                                        value={formData.fechaEntrega}
                                         onChange={handleInputChange}
                                     />
                                 </div>
                                 <div className="flex items-center justify-between">
-                                    <button 
-                                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" 
+                                    <button
+                                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                                         type="submit"
                                         id="saveChange"
-                                        name="rol"
                                     >
                                         Guardar Cambios
                                     </button>
-                                    <button 
-                                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" 
+                                    <button
+                                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                                         type="button"
                                         onClick={closeEditPopup}
                                     >
