@@ -1,48 +1,64 @@
 import React, { useEffect, useState } from "react";
 import InputForm from "./InputForm";
 import Table from "./Table";
-import MobileTable from "./MobileTable"
+import MobileTable from "./MobileTable";
 import { useNavigate } from "react-router-dom";
 
 function ListRepair() {
     const headers = [
-        { label: 'ID', key: 'id' },
-        { label: 'Cliente', key: 'cliente' },
-        { label: 'Marca', key: 'marca' },
-        { label: 'Modelo', key: 'modelo' },
-        { label: 'Matricula', key: 'matricula' },
-        { label: 'Inicio', key: 'inicio' },
-        { label: 'Fin', key: 'fin' },
+        { label: 'ID', key: 'idReparacion' },
+        { label: 'Cliente', key: 'firstName' },
+        { label: 'Marca', key: 'marcaVehiculo' },
+        { label: 'Modelo', key: 'modeloVehiculo' },
+        { label: 'Matricula', key: 'matriculaVehiculo' },
+        { label: 'Inicio', key: 'fechaInicio' },
+        { label: 'Fin', key: 'fechaEntrega' },
         { label: 'Falla', key: 'falla' },
-        { label: 'Status', key: 'status' },
         { label: 'Editar', key: 'editar' }, 
         { label: 'Eliminar', key: 'eliminar' } 
     ];
+
     const [datas, setDatas] = useState([]);
     const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
-        fin: '',
+        fechaEntrega: '',
         falla: '',
-        status:''
+        status: ''
     });
- // Simulando la carga de datos de una API
-    useEffect(() => {
 
+    useEffect(() => {
         const fetchData = async () => {
-            const response = [
-                { id: 1,cliente:'Jhovany', marca: 'Nissan', modelo: 'Versa', matricula: 'MJDH93', inicio: '03/10/2024', fin: '13/10/2024', falla: 'el carro no tiene frenos y arreglo de farolas' ,status:'En proceso'},
+            const response = await fetch('/api/reparaciones', {
+                method: 'GET',
+            });
+
+            if (!response.ok) {
+                console.error("Couldn't fetch reparaciones");
+            } else {
+                const data = await response.json();
                 
-            ];
-            setDatas(response  );
+                // Transform the fetched data to match the table structure
+                const transformedData = data.map(reparacion => ({
+                    idReparacion: reparacion.idReparacion,
+                    firstName: reparacion.vehiculo.cliente.firstName,
+                    marcaVehiculo: reparacion.vehiculo.marcaVehiculo,
+                    modeloVehiculo: reparacion.vehiculo.modeloVehiculo,
+                    matriculaVehiculo: reparacion.vehiculo.matriculaVehiculo,
+                    fechaInicio: reparacion.fechaInicio,
+                    fechaEntrega: reparacion.fechaEntrega,
+                    falla: reparacion.falla
+                }));
+                
+                setDatas(transformedData); // Set the transformed data to state
+            }
         };
 
         fetchData();
     }, []);
 
     const openEditPopup = (id) => {
-        setFormData(id)
-        console.log(id)
+        setFormData(id);
         setIsEditPopupOpen(true);
     };
 
@@ -52,26 +68,21 @@ function ListRepair() {
 
     const handleEditSubmit = (e) => {
         e.preventDefault();
-        console.log(formData);
-        //aqui debe ir la api que edita
-        
+        // Here goes the API call to edit
         closeEditPopup();
-
         navigate('/repairs', {
             replace: true,
             state: { formData }
         });
-
         setFormData({
             fin: '',
             falla: '',
-            status:''   
+            status: ''
         });
     };
 
     const handleDeleteSubmit = (userId) => {
         console.log(`Eliminando reparacion con ID: ${userId}`);
-    
     };
 
     const handleInputChange = (e) => {
@@ -80,7 +91,7 @@ function ListRepair() {
             ...formData,
             [name]: value,
         });
-    }
+    };
 
     return (
         <div className="h-auto">
@@ -89,85 +100,65 @@ function ListRepair() {
                     <h3 className="text-3xl font-medium text-gray-700 dark:text-white">Reparaciones</h3>
                     <div className="flex flex-col mt-8">
                         <Table headers={headers} datas={datas} openEditPopup={openEditPopup} handleDeleteSubmit={handleDeleteSubmit} />
-                        <MobileTable  datas={datas} handleDeleteSubmit={handleDeleteSubmit} openEditPopup={openEditPopup} />
+                        <MobileTable datas={datas} handleDeleteSubmit={handleDeleteSubmit} openEditPopup={openEditPopup} />
                     </div>
-                    
                 </div>
             </section>
             {isEditPopupOpen && (
-            <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-auto w-full flex justify-center items-center" id="my-modal">
-                <div className="relative mx-auto p-5 border w-full max-w-lg shadow-lg rounded-md bg-white dark:bg-gray-800">
-                    <div className="mt-3 text-center">
-                        <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">Editar vehiculo</h3>
-                        <form onSubmit={handleEditSubmit} className="mt-2 text-left">
-                            <div className="mb-4">
-                                <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="falla">
-                                    Falla
-                                </label>
-                                <InputForm 
-                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-900 dark:text-white leading-tight focus:outline-none focus:shadow-outline" 
-                                    id="color" 
-                                    type="text" 
-                                    name="color"
-                                    placeholder="Color"
-                                    value={formData.falla}
-                                    onChange={handleInputChange}
-                                />
-                            </div>
-                            <div className="mb-4">
-                                <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="fin">
-                                    Fin
-                                </label>
-                                <InputForm 
-                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-900 dark:text-white leading-tight focus:outline-none focus:shadow-outline" 
-                                    id="fin" 
-                                    type="date" 
-                                    name="fin"
-                                    value={formData.fin}
-                                    onChange={handleInputChange}
-                                />
-                            </div>
-                            <div className="mb-4">
-                                <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="status">
-                                    Status
-                                </label>
-                                <select 
-                                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-900 dark:text-white leading-tight focus:outline-none focus:shadow-outline" 
-                                    id="status" 
-                                    value={formData.status}
-                                    name= "status"
-                                    onChange={handleInputChange}
-                                    required
-                                >   
-                                    <option value=""></option>
-                                    <option value="En proceso">En proceso</option>
-                                    <option value="Finalizado">Finalizado</option>
-                                </select>
-                            </div>
-                            
-                            <div className="flex items-center justify-between">
-                            <button 
-                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" 
-                                type="submit"
-                                id="saveChange"
-                                name="rol"
-                            >
-                                Guardar Cambios
-                            </button>
-                            <button 
-                                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" 
-                                type="button"
-                                onClick={closeEditPopup}
-                            >
-                                Cancelar
-                            </button>
-
-                            </div>
-                        </form>
+                <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-auto w-full flex justify-center items-center" id="my-modal">
+                    <div className="relative mx-auto p-5 border w-full max-w-lg shadow-lg rounded-md bg-white dark:bg-gray-800">
+                        <div className="mt-3 text-center">
+                            <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">Editar vehiculo</h3>
+                            <form onSubmit={handleEditSubmit} className="mt-2 text-left">
+                                <div className="mb-4">
+                                    <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="falla">
+                                        Falla
+                                    </label>
+                                    <InputForm 
+                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-900 dark:text-white leading-tight focus:outline-none focus:shadow-outline" 
+                                        id="color" 
+                                        type="text" 
+                                        name="color"
+                                        placeholder="Color"
+                                        value={formData.falla}
+                                        onChange={handleInputChange}
+                                    />
+                                </div>
+                                <div className="mb-4">
+                                    <label className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2" htmlFor="fin">
+                                        Fin
+                                    </label>
+                                    <InputForm 
+                                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:bg-gray-900 dark:text-white leading-tight focus:outline-none focus:shadow-outline" 
+                                        id="fin" 
+                                        type="date" 
+                                        name="fin"
+                                        value={formData.fin}
+                                        onChange={handleInputChange}
+                                    />
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <button 
+                                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" 
+                                        type="submit"
+                                        id="saveChange"
+                                        name="rol"
+                                    >
+                                        Guardar Cambios
+                                    </button>
+                                    <button 
+                                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" 
+                                        type="button"
+                                        onClick={closeEditPopup}
+                                    >
+                                        Cancelar
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
-            </div>
-)}
+            )}
         </div>
     );
 }
