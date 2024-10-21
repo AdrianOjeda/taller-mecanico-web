@@ -118,8 +118,10 @@ function ListRepair() {
 
     const handleDeleteSubmit = async (reparacion) => {
         console.log(`Eliminando reparación con ID: ${reparacion.idReparacion}`);
+
+        const idReparacion = reparacion.idReparacion;
         try {
-            const response = await fetch(`/api/reparaciones/${reparacion.idReparacion}`, {
+            const response = await fetch(`/api/reparaciones/${idReparacion}`, {
                 method: 'DELETE',
             });
 
