@@ -10,42 +10,62 @@ function Charts() {
 
     useEffect(() => {
         // Simulación de llamada a una API (con datos aleatorios) máximo 8 elementos
-        const fetchSparePartsData = () => {
-            const data = [
-                { pieza: "Batería", cantidad: 1 },
-                { pieza: "Frenos", cantidad: 20 },
-                { pieza: "Filtro de Aceite", cantidad: 23 },
-                { pieza: "Amortiguadores", cantidad: 2 },
-                { pieza: "Neumáticos", cantidad: 8 },
-                { pieza: "Radiador", cantidad: 155 },
-                { pieza: "Luces", cantidad: 456 },
-                { pieza: "Bujías", cantidad: 15 },
-            ];
-            setSparePartsData(data);
+        const fetchSparePartsData = async() => {
+            
+            try {
+                const response = await fetch("/api/piezas/mostUsed",{
+                    method:'GET',
+                });
+                if(!response.ok){
+                    swal({icon:'error', title:'No se pudo cargar el grafico'});
+                }else{
+                    const data = await response.json();
+
+                    console.log(data);
+                    
+                    setSparePartsData(data);
+                }
+            } catch (error) {
+                console.error(error);
+                
+            }
+            
         };
 
-        const fetchBrandData = () => {
+        const fetchBrandData = async() => {
             // Simulación de llamada a una API (con datos aleatorios) máximo 5 elementos
-            const data = [
-                { marca: "Nissan", cantidad: 23 },
-                { marca: "Toyota", cantidad: 13 },
-                { marca: "Audi", cantidad: 6 },
-                { marca: "Mercedes", cantidad: 3 },
-                { marca: "Ford", cantidad: 33}
-            ];
-            setBrandData(data);
+            try {
+                const response = await fetch("/api/vehiculos/marcasRepaired");
+                if(!response.ok){
+                    swal({icon:'error', title:'No se pudo cargar el grafico'});
+                }else{
+                    const data = await response.json();
+                    setBrandData(data);
+                }
+            } catch (error) {
+                console.error(error);
+                
+            }
+            
         };
 
-        const fetchTimeToRepair = () => {
+        const fetchTimeToRepair = async () => {
             //maximo 10
-            const data = [
-                {dias : 7, cantidad: 23},
-                {dias : 14, cantidad: 3},
-                {dias : 3, cantidad: 11},
-                {dias : 23, cantidad: 20},
-                {dias : 31, cantidad: 50},
-            ];
-            setTimeToRepair(data);
+            try {
+                const response  = await fetch("/api/reparaciones/fechas");
+                if(!response.ok){
+                    swal({icon:'error', title:'No se pudo cargar el grafico'});
+
+                }else{
+                    const data = await response.json();
+                    console.log(data);
+                    setTimeToRepair(data);
+                }
+            } catch (error) {
+                console.error(error);
+                
+            }
+            
         }
 
         fetchSparePartsData(); // Llama a la función para obtener los datos
@@ -64,8 +84,8 @@ function Charts() {
                     <PieChart 
                         data={sparePartsData} 
                         text="Piezas más usadas" 
-                        labelKey="pieza" 
-                        valueKey="cantidad" 
+                        labelKey="pieza_name" 
+                        valueKey="veces_usada" 
                     />
                 </div>
                 <div className="flex flex-col items-center  justify-center bg-slate-100 dark:bg-slate-300 rounded-2xl shadow-2xl dark:shadow-slate-800 p-4">
@@ -73,8 +93,8 @@ function Charts() {
                     <PieChart 
                         data={brandData} 
                         text="Marcas con más fallas y reparaciones" 
-                        labelKey="marca" 
-                        valueKey="cantidad" 
+                        labelKey="marca_vehiculo" 
+                        valueKey="reparaciones_totales" 
                     />
                 </div>
                 <div className="flex flex-col items-center justify-center col-span-1 md:col-span-2 bg-slate-100 dark:bg-slate-300 rounded-2xl shadow-2xl dark:shadow-slate-800 p-4">
@@ -82,8 +102,8 @@ function Charts() {
                     <BarChart
                         data={timeToRepair} 
                         text="Tiempo promedios en reparaciones" 
-                        labelKey="dias" 
-                        valueKey="cantidad" 
+                        labelKey="repair_duration" 
+                        valueKey="total_reparaciones" 
                     />
                 </div>
             </main>
