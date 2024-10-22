@@ -40,13 +40,37 @@ function Login(){
                 title: 'Inicio de sesión exitoso',
                 icon: 'success'
             });
-            navigate('/users', {
+            localStorage.setItem('tipo',user.role)
+            localStorage.setItem('user',user.username)
+
+            if (user.role === "ADMINISTRADOR") {
+                navigate('/users', {
                 replace: true,
                 state: {
                     logged: true,
                     user: user.username, // Pass the username from the response
                 }
             });
+            }
+            else if (user.role === "GERENTE") {
+                navigate('/customers', {
+                    replace: true,
+                    state: {
+                        logged: true,
+                        user: user.username, // Pass the username from the response
+                    }
+                });
+            }
+            else{
+                navigate('/repairs', {
+                    replace: true,
+                    state: {
+                        logged: true,
+                        user: user.username, // Pass the username from the response
+                    }
+                });
+            }
+            
         } else {
             Swal.fire({
                 title: 'Credenciales invalidas',
@@ -58,6 +82,8 @@ function Login(){
 
     useEffect(() => {
         const isDark = localStorage.getItem("theme");
+        localStorage.removeItem("user");
+        localStorage.removeItem("tipo")
         if(checked || isDark === "dark"){
             document.documentElement.classList.add("dark");
         } else {

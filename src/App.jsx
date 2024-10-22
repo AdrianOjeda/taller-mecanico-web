@@ -6,18 +6,19 @@ import Vehicles from './pages/Vehicles';
 import Repairs from './pages/Repairs';
 import SpareParts from './pages/SpareParts';
 import Charts from './pages/Charts';
+import PrivateRoute from './PrivateRoute';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path='/' element={<Login />} />
-        <Route path='/users' element={<Usuarios />} />
-        <Route path='/customers' element={<Customers />} />
-        <Route path='/vehicles' element={<Vehicles />} />
-        <Route path='/repairs' element={<Repairs />} />
-        <Route path='/spareparts' element={<SpareParts />} />
-        <Route path='/charts' element={<Charts/>}/>
+        <Route path='/users' element={<PrivateRoute element={<Usuarios />} allowedRoles={['ADMINISTRADOR']} />} />
+        <Route path='/customers' element={<PrivateRoute element={<Customers />} allowedRoles={['ADMINISTRADOR', 'GERENTE']} />} />
+        <Route path='/vehicles' element={<PrivateRoute element={<Vehicles />} allowedRoles={['ADMINISTRADOR', 'GERENTE']} />} />
+        <Route path='/repairs' element={<PrivateRoute element={<Repairs />} allowedRoles={['ADMINISTRADOR', 'GERENTE', 'MECANICO']} />} />
+        <Route path='/spareparts' element={<PrivateRoute element={<SpareParts />} allowedRoles={['ADMINISTRADOR', 'GERENTE', 'MECANICO']} />} />
+        <Route path='/charts' element={<PrivateRoute element={<Charts />} allowedRoles={['ADMINISTRADOR','GERENTE']} />} />
       </Routes>
     </BrowserRouter>
   );
