@@ -69,31 +69,28 @@ function ListSpareParts() {
             body: JSON.stringify(formData),
         });
     
-        if (!response.ok) {
-            swal({ icon: "error", title: "No se pudo editar la pieza!" });
-        } else {
-            swal({ icon: "success", title: "Pieza editada con éxito" }).then(() => {
-                fetchData(); // Refresh or refetch data after successful edit
-            });
-    
-            closeEditPopup(); // Close the edit popup or modal
-    
-            
-            setFormData({
-                piezaName: '',
-                piezaDescripcion: '',
-                stock: '',
-            });
-        }
+        swal({ icon: "success", title: "Pieza editada con éxito" }).then(() => {
+            fetchData(); // Refresh or refetch data after successful edit
+        });
+
+        closeEditPopup(); // Close the edit popup or modal
+
+        
+        setFormData({
+            piezaName: '',
+            piezaDescripcion: '',
+            stock: '',
+        });
     };
     
 
     const handleDeleteSubmit = async (row) => {
         console.log(row.idPieza);
         
-        console.log(`Eliminando pieza: ${row}`);
+       
 
         const idPieza = row.idPieza;
+        console.log(`Eliminando pieza: ${idPieza}`);
         const response = await fetch(`/api/piezas/${idPieza}`, {
             method: 'DELETE',
         });

@@ -71,7 +71,7 @@ function SparePartsForm() {
                         type="text"
                         placeholder="Ingrese el nombre de la pieza"
                         name="piezaName"
-                        value={formData.nombrePieza}
+                        value={formData.piezaName}
                         onChange={handleInputChange} 
                         className="mt-1 block w-full rounded-md shadow-sm dark:bg-slate-700 h-10 p-1 dark:text-white"
                     />
