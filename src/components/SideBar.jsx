@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import CloseIcon from '@mui/icons-material/Close';
-import SwitchTheme from "./SwitchTheme"; // Ensure this component is defined
+import SwitchTheme from "./SwitchTheme"; // Asegúrate de que este componente esté definido
 import ExitToApp from "@mui/icons-material/ExitToApp";
 
 function SideBar() {
@@ -10,8 +10,60 @@ function SideBar() {
     const [typeTheme, setTypeTheme] = useState(localStorage.getItem("TypeTheme") || "default");
     const [startHour, setStartHour] = useState(localStorage.getItem("StartHour") || "");
     const [endHour, setEndHour] = useState(localStorage.getItem("EndHour") || "");
-    const [currentTheme, setCurrentTheme] = useState(localStorage.getItem("theme") || "light"); // New state for the current theme
-    const location = useLocation();
+    const [currentTheme, setCurrentTheme] = useState(localStorage.getItem("theme") || "light");
+
+    // Leer datos del localStorage al inicio
+    const username = localStorage.getItem("user");
+    const rol = localStorage.getItem("tipo");
+
+    const closeSideBar = () => setIsOpen(false);
+
+    const handleResize = () => {
+        if (window.innerWidth >= 1024) {
+            closeSideBar();
+        }
+    };
+
+    const updateTheme = () => {
+        const currentHour = new Date();
+        const formattedTime = currentHour.toTimeString().substring(0, 5); // Obtener HH:mm
+
+        if (typeTheme === "hours") {
+            if (formattedTime >= startHour && formattedTime < endHour) {
+                setCurrentTheme("dark");
+            } else {
+                setCurrentTheme("light");
+            }
+        } else if (typeTheme === "system") {
+            const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            setCurrentTheme(isDarkMode ? "dark" : "light");
+        }
+    };
+
+    useEffect(() => {
+        updateTheme();
+
+        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        const handleMediaChange = (event) => {
+            setCurrentTheme(event.matches ? "dark" : "light");
+        };
+
+        mediaQuery.addEventListener('change', handleMediaChange);
+        const intervalId = setInterval(updateTheme, 30000); // Cada 30 segundos
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            clearInterval(intervalId);
+            mediaQuery.removeEventListener('change', handleMediaChange);
+            window.removeEventListener('resize', handleResize);
+        };
+    }, [typeTheme, startHour, endHour]);
+
+    useEffect(() => {
+        document.documentElement.classList.toggle("dark", currentTheme === "dark");
+        localStorage.setItem("theme", currentTheme); // Guardar tema actual en localStorage
+    }, [currentTheme]);
 
     const handleTypeTheme = (e) => {
         const newTheme = e.target.value;
@@ -31,62 +83,6 @@ function SideBar() {
         localStorage.setItem("EndHour", newEndHour);
     };
 
-    const username = localStorage.getItem("user");
-    const rol = localStorage.getItem("tipo");
-
-    const closeSideBar = () => {
-        setIsOpen(false);
-    };
-
-    const handleResize = () => {
-        if (window.innerWidth >= 1024) {
-            closeSideBar();
-        }
-    };
-
-    useEffect(() => {
-        const updateThemeBasedOnTime = () => {
-            const currentHour = new Date();
-            const formattedTime = currentHour.toTimeString().substring(0, 5); // Get HH:mm
-            if (typeTheme === "hours") {
-                const firstHours = localStorage.getItem("StartHour");
-                const endHours = localStorage.getItem("EndHour");
-
-                if (formattedTime >= firstHours && formattedTime < endHours) {
-                    document.documentElement.classList.add("dark");
-                    localStorage.setItem("theme", "dark");
-                    setCurrentTheme("dark"); // Update the current theme state
-                } else {
-                    document.documentElement.classList.remove("dark");
-                    localStorage.setItem("theme", "light");
-                    setCurrentTheme("light"); // Update the current theme state
-                }
-            }
-        };
-
-        // Call the function when the component mounts
-        updateThemeBasedOnTime();
-
-        const intervalId = setInterval(updateThemeBasedOnTime, 60000); // Check every minute
-
-        window.addEventListener('resize', handleResize);
-
-        // Clean up the effect
-        return () => {
-            clearInterval(intervalId); // Clear the interval on unmount
-            window.removeEventListener('resize', handleResize);
-        };
-    }, [typeTheme]); // Dependency on typeTheme
-
-    // Set the theme class on the document element based on currentTheme
-    useEffect(() => {
-        if (currentTheme === "dark") {
-            document.documentElement.classList.add("dark");
-        } else {
-            document.documentElement.classList.remove("dark");
-        }
-    }, [currentTheme]);
-
     return (
         <>
             <header className="block">
@@ -104,7 +100,7 @@ function SideBar() {
             </header>
 
             <aside
-                className={`fixed top-0 left-0 z-50 sm:w-56 h-screen transition-transform w-3/4 bg-gray-50 dark:bg-gray-900 ${isOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0`}
+                className={`fixed top-0 left-0 z-50 sm:w-52 h-screen transition-transform w-3/4 bg-gray-50 dark:bg-gray-900 ${isOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0`}
             >
                 <div className="h-full px-3 py-4 overflow-y-auto">
                     <ul className="space-y-2 font-medium">
@@ -132,7 +128,7 @@ function SideBar() {
                         <h1 className="dark:text-white">Hola, {username}</h1>
                         <h2 className="dark:text-white">{rol}</h2>
 
-                        {/* Menu section based on role */}
+                        {/* Menú basado en el rol */}
                         {rol === "ADMINISTRADOR" && (
                             <>
                                 <li>
@@ -241,12 +237,6 @@ function SideBar() {
                                     />
                                 </li>
                                 <br />
-                                <button 
-                                    onClick={() => window.location.reload()}
-                                    className="dark:text-white bg-blue-500 text-white p-2 rounded w-3/4"
-                                >
-                                    Listo
-                                </button>
                             </>
                         )}
                     </ul>
