@@ -84,6 +84,10 @@ function Login(){
         const isDark = localStorage.getItem("theme");
         localStorage.removeItem("user");
         localStorage.removeItem("tipo")
+        if (localStorage.getItem("TypeTheme") === null){
+            localStorage.setItem("TypeTheme","default")
+        }
+
         if(checked || isDark === "dark"){
             document.documentElement.classList.add("dark");
         } else {
