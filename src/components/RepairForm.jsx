@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import InputForm from './InputForm';
 import { useNavigate } from "react-router-dom";
+
 import swal from 'sweetalert'; 
 
 export default function VehicleRepairForm() {
@@ -10,7 +11,7 @@ export default function VehicleRepairForm() {
         marcaVehiculo: '',
         modeloVehiculo: '',
         matriculaVehiculo: '',
-        vehiculo: { idVehiculo: null }, // Change here to include vehiculo object
+        vehiculo: { idVehiculo: null }, 
         fechaInicio: new Date(new Date().getTime() - new Date().getTimezoneOffset() * 60000).toISOString().split('T')[0],
         fechaEntrega: '',
         falla: '',
@@ -25,20 +26,16 @@ export default function VehicleRepairForm() {
                 const response = await fetch("/api/piezas", {
                     method: 'GET',
                 });
-                if (!response.ok) {
-                    console.error("Network error");
-                } else {
+                if (response.ok) {
                     const data = await response.json();
-
-                    console.log(data);
-                    
                     setPiezas(data);
+                } else {
+                    console.error("Error fetching piezas data");
                 }
             } catch (error) {
                 console.error("Couldn't fetch piezas");
             }
         };
-
         fetchPiezas();
     }, []);
 
@@ -57,7 +54,7 @@ export default function VehicleRepairForm() {
                     marcaVehiculo: data.marcaVehiculo,
                     modeloVehiculo: data.modeloVehiculo,
                     matriculaVehiculo: searchMatricula,
-                    vehiculo: { idVehiculo: parseInt(data.idVehiculo, 10) }, // Save idVehiculo in the vehiculo object
+                    vehiculo: { idVehiculo: parseInt(data.idVehiculo, 10) }, 
                 });
                 setError('');
             }
@@ -81,14 +78,14 @@ export default function VehicleRepairForm() {
         const updatedPiezasUtilizadas = [...formData.piezasUtilizadas];
 
         if (name === 'idPieza') {
-            updatedPiezasUtilizadas[index].idPieza = parseInt(value, 10) || null; // Save as integer
+            updatedPiezasUtilizadas[index].idPieza = parseInt(value, 10) || null;
         } else if (name === 'stock') {
             const selectedPieza = piezas.find(p => p.idPieza === updatedPiezasUtilizadas[index].idPieza);
             if (selectedPieza && parseInt(value, 10) > selectedPieza.stock) {
                 setError('La cantidad no puede ser mayor que el stock disponible.');
                 return;
             }
-            updatedPiezasUtilizadas[index].stock = parseInt(value, 10) || 1; // Save as integer
+            updatedPiezasUtilizadas[index].stock = parseInt(value, 10) || 1;
         }
 
         setFormData({ ...formData, piezasUtilizadas: updatedPiezasUtilizadas });
@@ -112,38 +109,38 @@ export default function VehicleRepairForm() {
         setFormData({ ...formData, piezasUtilizadas: updatedPiezasUtilizadas });
     };
 
-    const handleSubmit = async(e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (!formData.marcaVehiculo || !formData.modeloVehiculo || !formData.matriculaVehiculo || formData.vehiculo.idVehiculo === null) {
             setError("Debe buscar un vehículo antes de guardar la reparación.");
             return;
         }
-    
-        console.log(formData);
+
         try {
-            const response = await fetch("/api/reparaciones",{
-                method:'POST',
-                headers:{
-                    'Content-Type':'application/json',
+            const response = await fetch("/api/reparaciones", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(formData), // Send the complete formData including the vehiculo object
+                body: JSON.stringify(formData),
             });
-            if(!response.ok){
-                swal({icon:'error', title:'No se pudo agregar la reparacion'});
-            }else{
-                swal({icon:'success', title:'Reparacion agregada con exito'}).then(()=>{
+            if (!response.ok) {
+                swal({ icon: 'error', title: 'No se pudo agregar la reparacion' });
+            } else {
+                swal({ icon: 'success', title: 'Reparacion agregada con exito' }).then(() => {
                     navigate('/repairs', {
                         replace: true,
-                        state: { formData }
+                        state: { formData, timestamp: new Date().getTime() } 
                     });
                 });
                 
+                const currentDate = new Date().toISOString().split('T')[0];
                 setFormData({
                     marcaVehiculo: '',
                     modeloVehiculo: '',
                     matriculaVehiculo: '',
-                    vehiculo: { idVehiculo: null }, // Reset the vehiculo object
-                    fechaInicio: new Date().toISOString().split('T')[0],
+                    vehiculo: { idVehiculo: null }, 
+                    fechaInicio: currentDate,
                     fechaEntrega: '',
                     falla: '',
                     piezasUtilizadas: [{ idPieza: null, stock: 1 }],
@@ -154,6 +151,7 @@ export default function VehicleRepairForm() {
             console.log(error);
         }
     };
+
     return (
         <section className="w-full mx-auto p-6 bg-white dark:bg-slate-800 rounded-lg shadow-md">
             <div className="container px-6 py-8 mx-auto">

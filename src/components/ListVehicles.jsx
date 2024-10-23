@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import InputForm from "./InputForm";
 import Table from "./Table";
 import MobileTable from "./MobileTable";
-import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+
 
 function ListVehicles() {
     const headers = [
@@ -21,7 +22,7 @@ function ListVehicles() {
     const [editingVehiculoId, setEditingVehiculoId] = useState(null);
     const [datas, setDatas] = useState([]);
     const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
-    const navigate = useNavigate();
+    const location = useLocation();
     const [formData, setFormData] = useState({
         idCliente: 0,
         marcaVehiculo: '',
@@ -34,7 +35,7 @@ function ListVehicles() {
 
     useEffect(() => {
         fetchData();
-    }, []);
+    }, [location.state]);
 
     const fetchData = async () => {
         try {
