@@ -4,90 +4,96 @@ import { useNavigate } from "react-router-dom";
 
 function VehicleForm() {
     const [customers, setCustomers] = useState([]);
-    const [formData, setFormData] = useState({
-        idCliente: 0,
-        marcaVehiculo: '',
-        modeloVehiculo: '',
-        matriculaVehiculo: '',
-        fechaIngreso: '',
-        colorVehiculo: '',
-        notasVehiculo: ''
-    });
+    const [vehicleFormData, setVehicleFormData] = useState({
+    idCliente: 0,
+    marcaVehiculo: '',
+    modeloVehiculo: '',
+    matriculaVehiculo: '',
+    fechaIngreso: '',
+    colorVehiculo: '',
+    notasVehiculo: ''
+});
 
-    const navigate = useNavigate();
+const navigate = useNavigate();
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const response = await fetch("/api/clientes");
-            if (response.ok) {
-                const data = await response.json();
-                setCustomers(data);
-            } else {
-                throw new Error("Couldn't fetch client data");
-            }
-        };
+useEffect(() => {
+    const fetchData = async () => {
+        const response = await fetch("/api/clientes");
+        if (response.ok) {
+            const data = await response.json();
+            setCustomers(data);
+        } else {
+            throw new Error("Couldn't fetch client data");
+        }
 
-        fetchData();
-
-        // Set the current date
-        const currentDate = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
-        setFormData((prevFormData) => ({
-            ...prevFormData,
-            fechaIngreso: currentDate // Use fechaIngreso instead of fecha
-        }));
-    }, []);
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: name === 'idCliente' ? parseInt(value) : value, // Adjusted for idCliente
-        });
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        console.log(formData);
+    fetchData();
 
-        const adjustedFormData = {
-            ...formData,
-            cliente: {
-                idCliente: formData.idCliente
-            }
-        };
-        console.log(adjustedFormData);
-        
-        try {
-            const response = await fetch("/api/vehiculos", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(adjustedFormData),
-            });
+    // Set the current date
+    const currentDate = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+    setVehicleFormData((prevFormData) => ({
+        ...prevFormData,
+        fechaIngreso: currentDate // Use fechaIngreso instead of fecha
+    }));
+}, []);
 
-            if (response.ok) {
-                swal({icon:'success', title:'Vehiculo agregado con exito'}).then(()=>{
-                    navigate("/vehicles"); // Adjust the navigation path as needed
-                })
+const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setVehicleFormData({
+        ...vehicleFormData,
+        [name]: name === 'idCliente' ? parseInt(value) : value, // Adjusted for idCliente
+    });
+};
 
-                setFormData({
-                    idCliente: 0,
-                    marcaVehiculo: '',
-                    modeloVehiculo: '',
-                    matriculaVehiculo: '',
-                    fechaIngreso: '',
-                    colorVehiculo: '',
-                    notasVehiculo: ''                        
-                });
-                
-            } else {
-                swal({icon:'error', title:'No se pudo agregar el vehiculo'})
-            }
-        } catch (error) {
-            console.error(error);
+const handleSubmit = async (e) => {
+    e.preventDefault();
+    console.log(vehicleFormData);
+
+    const adjustedFormData = {
+        ...vehicleFormData,
+        cliente: {
+            idCliente: vehicleFormData.idCliente
         }
     };
+    console.log(adjustedFormData);
+
+    try {
+        const response = await fetch("/api/vehiculos", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(adjustedFormData),
+        });
+
+        if (response.ok) {
+            swal({ icon: 'success', title: 'Vehículo agregado con éxito' }).then(() => {
+                navigate('/vehicles', {
+                    replace: true,
+                    state: { vehicleFormData }
+                });
+            });
+
+            const currentDate = new Date().toISOString().split('T')[0];
+            setVehicleFormData({
+                idCliente: 0,
+                marcaVehiculo: '',
+                modeloVehiculo: '',
+                matriculaVehiculo: '',
+                fechaIngreso: currentDate, // Reset to current date
+                colorVehiculo: '',
+                notasVehiculo: ''
+            });
+
+        } else {
+            swal({ icon: 'error', title: 'No se pudo agregar el vehículo' });
+        }
+    } catch (error) {
+        console.error(error);
+    }
+};
+
 
     return (
         <form
@@ -100,7 +106,7 @@ function VehicleForm() {
                     <select
                         id="cliente"
                         className="h-10 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring dark:bg-slate-700 dark:text-white"
-                        value={formData.idCliente}
+                        value={vehicleFormData.idCliente}
                         name="idCliente" // Use idCliente instead of cliente
                         onChange={handleInputChange}
                         required
@@ -120,7 +126,7 @@ function VehicleForm() {
                         type="text"
                         placeholder="Ingrese la marca"
                         name="marcaVehiculo"
-                        value={formData.marcaVehiculo}
+                        value={vehicleFormData.marcaVehiculo}
                         onChange={handleInputChange}
                         className="mt-1 block w-full rounded-md shadow-sm dark:bg-slate-700 h-10 p-1 dark:text-white"
                     />
@@ -132,7 +138,7 @@ function VehicleForm() {
                         type="text"
                         placeholder="Ingrese el modelo"
                         name="modeloVehiculo"
-                        value={formData.modeloVehiculo}
+                        value={vehicleFormData.modeloVehiculo}
                         onChange={handleInputChange}
                         className="mt-1 block w-full rounded-md shadow-sm dark:bg-slate-700 h-10 p-1 dark:text-white"
                     />
@@ -144,7 +150,7 @@ function VehicleForm() {
                         type="text"
                         placeholder="Ingrese la matricula"
                         name="matriculaVehiculo"
-                        value={formData.matriculaVehiculo}
+                        value={vehicleFormData.matriculaVehiculo}
                         onChange={handleInputChange}
                         className="mt-1 block w-full rounded-md shadow-sm dark:bg-slate-700 h-10 p-1 dark:text-white"
                     />
@@ -155,7 +161,7 @@ function VehicleForm() {
                         id="fechaIngreso"
                         type="text"
                         name="fechaIngreso"
-                        value={formData.fechaIngreso}
+                        value={vehicleFormData.fechaIngreso}
                         onChange={handleInputChange}
                         className="mt-1 block w-full rounded-md shadow-sm cursor-not-allowed dark:bg-slate-700 h-10 p-1 dark:text-white"
                         disabled={true}
@@ -168,7 +174,7 @@ function VehicleForm() {
                         type="color"
                         placeholder="Ingrese descripcion del color"
                         name="colorVehiculo"
-                        value={formData.colorVehiculo}
+                        value={vehicleFormData.colorVehiculo}
                         onChange={handleInputChange}
                         className="mt-1 block w-full rounded-md shadow-sm dark:bg-slate-700 h-10 p-1 dark:text-white"
                     />
@@ -180,7 +186,7 @@ function VehicleForm() {
                         type="text"
                         placeholder="Ingrese nota sobre el vehiculo"
                         name="notasVehiculo"
-                        value={formData.notasVehiculo}
+                        value={vehicleFormData.notasVehiculo}
                         onChange={handleInputChange}
                         className="mt-1 block w-full rounded-md shadow-sm dark:bg-slate-700 h-10 p-1 dark:text-white"
                     />

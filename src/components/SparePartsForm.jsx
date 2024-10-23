@@ -27,7 +27,7 @@ function SparePartsForm() {
     
             if(response.ok){
                 swal({icon:'success', title:'Pieza agregada con exito'}).then(()=>{
-                    window.location.reload();
+                    navigate('/spareparts', { replace: true, state: { formData } });
                 })
                 navigate('/spareparts', {
                     replace: true,

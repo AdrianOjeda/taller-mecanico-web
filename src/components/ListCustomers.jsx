@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import InputForm from "./InputForm";
 import Table from "./Table";
 import MobileTable from "./MobileTable";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function ListCustomers() {
     const headers = [
@@ -20,6 +20,7 @@ function ListCustomers() {
     const [datas, setDatas] = useState([]);
     const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
     const navigate = useNavigate();
+    const location = useLocation();
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -27,10 +28,6 @@ function ListCustomers() {
         phone: '',
         emailCliente: '' // New email field
     });
-
-    useEffect(() => {
-        fetchData();
-    }, []);
 
     const fetchData = async () => {
         try {
@@ -46,6 +43,9 @@ function ListCustomers() {
             console.error("Error fetching data", error);
         }
     };
+    useEffect(() => {
+        fetchData();
+    }, [location.state]);
 
     const openEditPopup = (customer) => { // Changed to accept customer object
         setFormData(customer); // Populate formData with the selected customer

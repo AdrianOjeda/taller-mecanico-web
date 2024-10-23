@@ -4,6 +4,7 @@ import Table from "./Table";
 import MobileTable from "./MobileTable";
 import { useNavigate } from "react-router-dom";
 import swal from 'sweetalert';
+import { useLocation } from "react-router-dom";
 
 function ListRepair() {
     const headers = [
@@ -18,7 +19,7 @@ function ListRepair() {
         { label: 'Editar', key: 'editar' },
         { label: 'Eliminar', key: 'eliminar' }
     ];
-
+    const location = useLocation();
     const [editingRepairId, setEditingRepairId] = useState(null);
     const [datas, setDatas] = useState([]);
     const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
@@ -32,7 +33,7 @@ function ListRepair() {
 
     useEffect(() => {
         fetchData();
-    }, []);
+    }, [location.state]);
 
     const fetchData = async () => {
         setLoading(true);

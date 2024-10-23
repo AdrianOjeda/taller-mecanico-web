@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import InputForm from "./InputForm";
 import Table from "./Table";
 import MobileTable from "./MobileTable"
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function ListSpareParts() {
     const headers =  [
@@ -17,6 +17,7 @@ function ListSpareParts() {
     const [editingPiezaId, setEditingPiezaId] = useState(null);
     const [datas, setDatas] = useState([]);
     const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
+    const location = useLocation();
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         piezaName: '',
@@ -40,7 +41,7 @@ function ListSpareParts() {
 };
  useEffect(() => {
     fetchData();
-}, []);
+}, [location.state]);
 
     const openEditPopup = (id) => {
         setFormData(id)

@@ -1,6 +1,6 @@
 import React, { useState , useEffect} from "react";
 import InputForm from "./InputForm";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import Table from "./Table";
 import MobileTable from "./MobileTable";
 function ListUsers() {
@@ -19,11 +19,8 @@ function ListUsers() {
 
     const [datas, setDatas] = useState([]);
     const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
-
     const [editingUserId, setEditingUserId] = useState(null);
-
     const location = useLocation();
-    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         username: '',
         password: '',
