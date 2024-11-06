@@ -1,7 +1,39 @@
 import React from "react";
 import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 
-function Table({ headers, datas, openEditPopup, handleDeleteSubmit, isColor }) {
+function Table({ headers, datas, openEditPopup, handleDeleteSubmit, isColor , isRepair}) {
+
+    function formatearFecha(fecha) {
+        const year = fecha.getFullYear();
+        const month = (fecha.getMonth() + 1).toString().padStart(2, '0');
+        const day = fecha.getDate().toString().padStart(2, '0');   
+      
+        return `${year}-${month}-${day}`;
+      }
+      
+    function isRepairHeader(isRepair) {
+        if (isRepair) {
+            return -3
+        }
+        else{
+            return -2
+        }
+    }
+
+    function isPdf(row) {
+        console.log(row.fechaEntrega);
+        const fechaActual = new Date();
+        const fechaFormateada = formatearFecha(fechaActual);
+        
+        if (row.fechaEntrega === fechaFormateada) {
+          return true;  
+        }else{
+            return false;
+        }
+        
+    }
+
     return (
         <div className="flex flex-col mt-8">
             <div className="hidden xl:block bg-white dark:bg-gray-800 overflow-x-auto rounded-lg shadow">
@@ -21,7 +53,7 @@ function Table({ headers, datas, openEditPopup, handleDeleteSubmit, isColor }) {
                     <tbody className="bg-white dark:bg-gray-800">
                         {datas.map((row) => (
                             <tr key={row.id}>
-                                {headers.slice(0, -2).map((header) => (
+                                {headers.slice(0, isRepairHeader(isRepair)).map((header) => (
                                     <td key={header.key} className="px-6 py-4 whitespace-normal text-sm text-gray-900 dark:text-white max-w-44 break-words">
                                         {header.key === 'color' && isColor ? (
                                             <div
@@ -43,6 +75,13 @@ function Table({ headers, datas, openEditPopup, handleDeleteSubmit, isColor }) {
                                     className="cursor-pointer transition-transform transform hover:scale-110 hover:text-red-500" 
                                 />
                                 </td>
+                                {isRepair?
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                                    {isPdf(row) ? <PictureAsPdfIcon/> : null}
+                                </td> :
+                                null
+                                }
+                                
                             </tr>
                         ))}
                     </tbody>
