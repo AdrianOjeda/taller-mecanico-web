@@ -17,14 +17,14 @@ function ListRepair() {
         { label: 'Fin', key: 'fechaEntrega' },
         { label: 'Falla', key: 'falla' },
         { label: 'Editar', key: 'editar' },
-        { label: 'Eliminar', key: 'eliminar' }
+        { label: 'Eliminar', key: 'eliminar' },
+        { label: 'PDF', key: 'pdf'}
     ];
     const location = useLocation();
     const [editingRepairId, setEditingRepairId] = useState(null);
     const [datas, setDatas] = useState([]);
     const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
     const [loading, setLoading] = useState(false);
-    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         fechaEntrega: '',
         falla: '',
@@ -156,8 +156,8 @@ function ListRepair() {
                     <div className="container px-6 py-8 mx-auto">
                         <h3 className="text-3xl font-medium text-gray-700 dark:text-white">Reparaciones</h3>
                         <div className="flex flex-col mt-8">
-                            <Table headers={headers} datas={datas} openEditPopup={openEditPopup} handleDeleteSubmit={handleDeleteSubmit} />
-                            <MobileTable datas={datas} handleDeleteSubmit={handleDeleteSubmit} openEditPopup={openEditPopup} />
+                            <Table headers={headers} datas={datas} openEditPopup={openEditPopup} handleDeleteSubmit={handleDeleteSubmit} isRepair={true}/>
+                            <MobileTable datas={datas} handleDeleteSubmit={handleDeleteSubmit} openEditPopup={openEditPopup} isRepair={true} />
                         </div>
                     </div>
                 </section>
