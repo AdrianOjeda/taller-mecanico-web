@@ -4,14 +4,19 @@ import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 
 function Table({ headers, datas, openEditPopup, handleDeleteSubmit, isColor , isRepair}) {
 
+    function handlePDFcreation(row) {
+        console.log(row);
+        
+    }
+
     function formatearFecha(fecha) {
         const year = fecha.getFullYear();
         const month = (fecha.getMonth() + 1).toString().padStart(2, '0');
-        const day = fecha.getDate().toString().padStart(2, '0');   
-      
-        return `${year}-${month}-${day}`;
-      }
-      
+        const day = fecha.getDate().toString().padStart(2, '0');  
+        
+            return `${year}-${month}-${day}`;
+        }
+        
     function isRepairHeader(isRepair) {
         if (isRepair) {
             return -3
@@ -22,16 +27,17 @@ function Table({ headers, datas, openEditPopup, handleDeleteSubmit, isColor , is
     }
 
     function isPdf(row) {
-        console.log(row.fechaEntrega);
         const fechaActual = new Date();
         const fechaFormateada = formatearFecha(fechaActual);
         
-        if (row.fechaEntrega === fechaFormateada) {
-          return true;  
-        }else{
-            return false;
+        if (row.fechaEntrega.slice(0,4) <= fechaFormateada.slice(0,4)) {
+            if (row.fechaEntrega.slice(5,7) <= fechaFormateada.slice(5,7)) {
+                if (row.fechaEntrega.slice(8,10) <= fechaFormateada.slice(8,10)) {
+                    return true; 
+                }
+            }
         }
-        
+        return false;
     }
 
     return (
@@ -77,7 +83,10 @@ function Table({ headers, datas, openEditPopup, handleDeleteSubmit, isColor , is
                                 </td>
                                 {isRepair?
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
-                                    {isPdf(row) ? <PictureAsPdfIcon/> : null}
+                                    {isPdf(row) ? <PictureAsPdfIcon 
+                                    onClick={()=> handlePDFcreation(row)}
+                                    
+                                    /> : null}
                                 </td> :
                                 null
                                 }

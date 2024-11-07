@@ -157,7 +157,7 @@ function ListRepair() {
                         <h3 className="text-3xl font-medium text-gray-700 dark:text-white">Reparaciones</h3>
                         <div className="flex flex-col mt-8">
                             <Table headers={headers} datas={datas} openEditPopup={openEditPopup} handleDeleteSubmit={handleDeleteSubmit} isRepair={true}/>
-                            <MobileTable datas={datas} handleDeleteSubmit={handleDeleteSubmit} openEditPopup={openEditPopup} />
+                            <MobileTable datas={datas} handleDeleteSubmit={handleDeleteSubmit} openEditPopup={openEditPopup} isRepair={true} />
                         </div>
                     </div>
                 </section>

@@ -1,11 +1,38 @@
 import React from "react";
 import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
-
-function MobileTable({ datas, handleDeleteSubmit, openEditPopup, type }) {
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+function MobileTable({ datas, handleDeleteSubmit, openEditPopup, type, isRepair }) {
     // Capitalize the first character of each word
     const capitalizeFirstLetter = (string) => {
         return string.charAt(0).toUpperCase() + string.slice(1);
     };
+
+    function handlePDFcreation(data) {
+        console.log(data);
+        
+    }
+
+    function formatearFecha(fecha) {
+        const year = fecha.getFullYear();
+        const month = (fecha.getMonth() + 1).toString().padStart(2, '0');
+        const day = fecha.getDate().toString().padStart(2, '0');  
+        
+            return `${year}-${month}-${day}`;
+        }
+
+    function isPdf(row){
+        const fechaActual = new Date();
+        const fechaFormateada = formatearFecha(fechaActual);
+    
+        if (row.fechaEntrega.slice(0,4) <= fechaFormateada.slice(0,4)) {
+            if (row.fechaEntrega.slice(5,7) <= fechaFormateada.slice(5,7)) {
+                if (row.fechaEntrega.slice(8,10) <= fechaFormateada.slice(8,10)) {
+                    return true; 
+                }
+            }
+        }
+        return false;
+    }
 
     return (
         <div className="xl:hidden space-y-6">
@@ -13,7 +40,7 @@ function MobileTable({ datas, handleDeleteSubmit, openEditPopup, type }) {
                 <div key={data.id} className="bg-white dark:bg-gray-800 shadow overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700">
                     <div className="px-4 py-5 sm:px-6">
                         <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-white">
-                            Detalles de {type} con ID: {data.id}
+                            Detalles:
                         </h3>
                     </div>
                     <div className="border-t border-gray-200 dark:border-gray-700">
@@ -65,6 +92,20 @@ function MobileTable({ datas, handleDeleteSubmit, openEditPopup, type }) {
                                     <DeleteIcon />
                                     </button>
                             </div>
+                            {isRepair? 
+                            <div className="flex items-center">
+                                {isPdf(data) ? <div><span className="mr-2 dark:text-white">Generar PDF:</span>
+                                    <button 
+                                        >
+                                        <PictureAsPdfIcon 
+                                        onClick={ () =>handlePDFcreation(data)}
+                                        />
+                                    </button> 
+                                </div>
+                                : null}
+                                
+                            </div>
+                            : null}
                         </div>
                     </div>
                 </div>
