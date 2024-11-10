@@ -17,7 +17,7 @@ function Charts() {
                     method:'GET',
                 });
                 if(!response.ok){
-                    swal({icon:'error', title:'No se pudo cargar el grafico'});
+                    throw new Error("No se pudo cargar el grafico");
                 }else{
                     const data = await response.json();
 
@@ -37,7 +37,7 @@ function Charts() {
             try {
                 const response = await fetch("/api/vehiculos/marcasRepaired");
                 if(!response.ok){
-                    swal({icon:'error', title:'No se pudo cargar el grafico'});
+                    throw new Error("No se pudo cargar el grafico");
                 }else{
                     const data = await response.json();
                     setBrandData(data);
@@ -54,7 +54,8 @@ function Charts() {
             try {
                 const response  = await fetch("/api/reparaciones/fechas");
                 if(!response.ok){
-                    swal({icon:'error', title:'No se pudo cargar el grafico'});
+                    throw new Error("No se pudo cargar el grafico");
+                    
 
                 }else{
                     const data = await response.json();

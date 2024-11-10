@@ -61,7 +61,7 @@ function ListRepair() {
             setDatas(transformedData);
         } catch (error) {
             console.error(error);
-            swal({ icon: 'error', title: 'Error fetching data' });
+            
         } finally {
             setLoading(false);
         }
