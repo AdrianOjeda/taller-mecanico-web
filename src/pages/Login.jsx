@@ -104,7 +104,7 @@ function Login(){
             </header>
             <div className="w-full max-w-7xl h-full bg-slate-700 grid grid-cols-1 lg:grid-cols-2 rounded-3xl shadow-2xl shadow-gray-800 dark:shadow-slate-950 p-4 lg:p-8 gap-6 sm:gap-8">
                 <div className="hidden lg:flex justify-center items-center">
-                    <img src='.\src\assets\logo.jpg' alt="Logo" className="w-3/4 h-auto rounded-full shadow-2xl" />
+                    <img src='/logo.jpg' alt="Logo" className="w-3/4 h-auto rounded-full shadow-2xl" />
                 </div>
                 <div className="flex flex-col justify-center items-center w-full text-center">
                     <h1 className="text-4xl md:text-5xl lg:text-6xl text-gray-50 font-serif mb-8">

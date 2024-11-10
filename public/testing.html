@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Mental de Pruebas de Software</title>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true });
+    </script>
+</head>
+<body>
+    <h1>Mapa Mental de Pruebas de Software</h1>
+    <div class="mermaid">
+        mindmap
+            root((Pruebas de Software))
+                Manuales
+                    Pruebas Exploratorias
+                        Explora el sistema sin pasos fijos para descubrir errores inesperados.
+                    Pruebas Basadas en Escenarios
+                        Sigue escenarios específicos que reflejan situaciones del usuario real.
+                Automatizadas
+                    Unitarias
+                        Evalúan funciones o métodos individuales de manera aislada para asegurar su correcto funcionamiento.
+                    Integración
+                        Prueban la interacción entre diferentes componentes del sistema para detectar fallos en la comunicación.
+                    Funcionales
+                        Verifican que el sistema cumpla con los requisitos y especificaciones funcionales.
+                        End-to-End Tests
+                            Evaluan el flujo completo de la aplicación desde la perspectiva del usuario final.
+                        Regression Tests
+                            Aseguran que nuevas modificaciones no rompan funcionalidades existentes.
+                    Validación de Sistema
+                        Smoke Tests
+                            Pruebas preliminares para verificar la estabilidad inicial del sistema.
+                        Acceptance Testing
+                            Validan que el sistema cumpla con los requisitos del cliente o usuario final.
+                    Desempeño
+                        Performance Testing
+                            Evalúan la velocidad, escalabilidad y estabilidad del sistema bajo diferentes cargas.
+    </div>
+</body>
+</html>
