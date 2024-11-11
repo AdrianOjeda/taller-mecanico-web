@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: taller-frontend-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: taller-frontend
+  template:
+    metadata:
+      labels:
+        app: taller-frontend
+    spec:
+      containers:
+        - name: taller-frontend
+          image: adrianojeda/taller-mecanico:v24
+          ports:
+            - containerPort: 80 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: taller-frontend-service
+spec:
+  selector:
+    app: taller-frontend
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: NodePort  # Use NodePort if you need to expose the frontend externally

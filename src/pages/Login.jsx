@@ -26,12 +26,12 @@ function Login(){
         event.preventDefault();
         console.log(formData);
         
-        const response = await fetch('/api/users/login', {
+        const response = await fetch('http://127.0.0.1:61565/taller-app/login', {
             method: 'POST', 
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(formData), // Send username and password in the body
+            body: JSON.stringify(formData),
         });
     
         if (response.ok) {

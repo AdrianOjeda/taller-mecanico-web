@@ -1,15 +1,14 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/api': {
-        target: 'http://localhost:8081/taller-app',  
+      '/taller-app': {
+        target: 'http://127.0.0.1:61565',  // Minikube URL
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ''),  
+        rewrite: (path) => path.replace(/^\/taller-app/, '/taller-app'), // Ensure it's mapped correctly
       },
     },
   },
