@@ -25,14 +25,33 @@ function Login(){
     const handleClick = async(event) => {
         event.preventDefault();
         console.log(formData);
-        
-        const response = await fetch('http://127.0.0.1:53973/taller-app/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(formData),
+
+        Swal.fire({
+            title: 'Inicio de sesión exitoso.',
+            icon: 'success'
         });
+        localStorage.setItem('tipo',"ADMINISTRADOR")
+        localStorage.setItem('user',"adrian")
+
+        if (localStorage.getItem('tipo') === "ADMINISTRADOR") {
+                navigate('/users', {
+                replace: true,
+                state: {
+                    logged: true,
+                    user: "adrian", // Pass the username from the response
+                }
+            });
+            }                   
+        };
+        /*const response = await fetch('http://127.0.0.1:8080/taller-app/login', {
+            method: 'POST', 
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData),
+        });*/
     
-        if (response.ok) {
+        /*if (response.ok) {
             const user = await response.json();
             Swal.fire({
                 title: 'Inicio de sesión exitoso',
@@ -76,7 +95,7 @@ function Login(){
             });
         }
         
-    };
+    };*/
 
     useEffect(() => {
         const isDark = localStorage.getItem("theme");
