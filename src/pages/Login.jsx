@@ -26,11 +26,9 @@ function Login(){
         event.preventDefault();
         console.log(formData);
         
-        const response = await fetch('http://127.0.0.1:61565/taller-app/login', {
-            method: 'POST', 
-            headers: {
-                'Content-Type': 'application/json',
-            },
+        const response = await fetch('http://127.0.0.1:53973/taller-app/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(formData),
         });
     
