@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: taller-frontend
-          image: adrianojeda/taller-mecanico:v24
+          image: keiv214/taller-mecanico-front
           ports:
             - containerPort: 80 
 ---
