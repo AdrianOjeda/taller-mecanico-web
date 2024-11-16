@@ -27,7 +27,7 @@ function Login(){
         console.log(formData);
 
         Swal.fire({
-            title: 'Inicio de sesión exitoso',
+            title: 'Inicio de sesión exitoso.',
             icon: 'success'
         });
         localStorage.setItem('tipo',"ADMINISTRADOR")
