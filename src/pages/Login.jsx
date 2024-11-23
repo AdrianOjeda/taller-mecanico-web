@@ -27,11 +27,10 @@ function Login(){
         console.log(formData);
         
         const response = await fetch('/api/users/login', {
-            method: 'POST', 
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(formData),
+            credentials: 'include',
         });
     
         if (response.ok) {
