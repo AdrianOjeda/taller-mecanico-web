@@ -5,10 +5,10 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      '/taller-app': {
-        target: 'http://127.0.0.1:61565',  // Minikube URL
+      '/api': {
+        target: 'https://taller-backend-prod-production.up.railway.app/taller-app', 
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/taller-app/, '/taller-app'), // Ensure it's mapped correctly
+        rewrite: (path) => path.replace(/^\/api/, ''),  
       },
     },
   },
