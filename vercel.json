@@ -2,10 +2,6 @@
     "version": 2,
     "builds": [
       {
-        "src": "src/api/*",
-        "use": "@vercel/node"
-      },
-      {
         "src": "package.json",
         "use": "@vercel/static-build"
       }
@@ -14,6 +10,10 @@
       {
         "src": "/api/(.*)",
         "dest": "https://taller-backend-prod-production.up.railway.app/taller-app/$1"
+      },
+      {
+        "src": "/(.*)",
+        "dest": "/index.html"
       }
     ]
   }
