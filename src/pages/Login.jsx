@@ -29,7 +29,7 @@ function Login(){
         const response = await fetch('https://taller-backend-prod-production.up.railway.app/taller-app/users', {
             method: 'GET',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(formData),
+            //body: JSON.stringify(formData),
             credentials: 'include',
         });
     
