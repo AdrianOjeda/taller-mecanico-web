@@ -62,7 +62,7 @@ function ListSpareParts() {
         console.log(formData);
     
         // Call the API to edit the pieza
-        const response = await fetch(`/api/piezas/${editingPiezaId}`, {
+        const response = await fetch(`/api/piezas/editar/${editingPiezaId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -93,7 +93,7 @@ function ListSpareParts() {
 
         const idPieza = row.idPieza;
         console.log(`Eliminando pieza: ${idPieza}`);
-        const response = await fetch(`/api/piezas/${idPieza}`, {
+        const response = await fetch(`/api/piezas/delete/${idPieza}`, {
             method: 'DELETE',
             credentials: 'include',
         });
