@@ -6,7 +6,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://taller-backend-prod-production.up.railway.app/taller-app', 
+        target: 'https://new-backend-repo-production.up.railway.app/taller-app', 
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),  
       },
