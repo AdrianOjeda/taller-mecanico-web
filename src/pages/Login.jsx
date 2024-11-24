@@ -26,7 +26,7 @@ function Login(){
         event.preventDefault();
         console.log(formData);
         
-        const response = await fetch('/api/users/login', {
+        const response = await fetch('https://taller-backend-prod-production.up.railway.app/taller-app/users/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(formData),
