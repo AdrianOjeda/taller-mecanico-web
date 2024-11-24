@@ -1,8 +1,19 @@
 {
-    "rewrites": [
+    "version": 2,
+    "builds": [
       {
-        "source": "/api/:path*",
-        "destination": "https://taller-backend-prod-production.up.railway.app/taller-app/:path*"
+        "src": "src/api/*",
+        "use": "@vercel/node"
+      },
+      {
+        "src": "package.json",
+        "use": "@vercel/static-build"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/api/(.*)",
+        "dest": "https://taller-backend-prod-production.up.railway.app/taller-app/$1"
       }
     ]
   }

@@ -15,6 +15,7 @@ function Charts() {
             try {
                 const response = await fetch("/api/piezas/mostUsed",{
                     method:'GET',
+                    credentials: 'include',
                 });
                 if(!response.ok){
                     throw new Error("No se pudo cargar el grafico");
