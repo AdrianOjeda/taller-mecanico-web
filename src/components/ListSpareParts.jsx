@@ -24,7 +24,7 @@ function ListSpareParts() {
         piezaDescripcion: '',
         stock: '',
     });
- // Simulando la carga de datos de una API
+ 
  const fetchData = async () => {
     try {
         const response = await fetch('/api/piezas'); // API call to my Spring Boot backend
