@@ -3,6 +3,10 @@
       {
         "source": "/api/:path*",
         "destination": "https://taller-backend-prod-production.up.railway.app/taller-app/:path*"
+      },
+      {
+        "source": "/:path*",
+        "destination": "/index.html"
       }
     ]
   }
