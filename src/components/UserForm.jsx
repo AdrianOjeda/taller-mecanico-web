@@ -32,6 +32,7 @@ function UserForm() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(formData), // Sending the form info to the backend
+                credentials: 'include',
             });
     
             if (response.ok) {

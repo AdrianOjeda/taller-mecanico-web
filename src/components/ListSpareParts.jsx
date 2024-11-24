@@ -68,6 +68,7 @@ function ListSpareParts() {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(formData),
+            credentials: 'include',
         });
     
         swal({ icon: "success", title: "Pieza editada con éxito" }).then(() => {
@@ -94,6 +95,7 @@ function ListSpareParts() {
         console.log(`Eliminando pieza: ${idPieza}`);
         const response = await fetch(`/api/piezas/${idPieza}`, {
             method: 'DELETE',
+            credentials: 'include',
         });
     
         if (response.ok) {

@@ -123,6 +123,7 @@ export default function VehicleRepairForm() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(formData),
+                credentials: 'include',
             });
             if (!response.ok) {
                 swal({ icon: 'error', title: 'No se pudo agregar la reparacion' });

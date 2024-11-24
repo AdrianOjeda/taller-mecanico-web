@@ -74,6 +74,7 @@ function ListCustomers() {
                     'Content-Type':'application/json',
                 },
                 body:JSON.stringify(formData),
+                credentials: 'include',
             });
             
             if(!response.ok){
@@ -114,6 +115,7 @@ function ListCustomers() {
         try {
             const response = await fetch(`/api/clientes/${idCliente}`,{
                 method:'DELETE',
+                credentials: 'include',
             }); //Delete endpoint
 
             if(response.ok){

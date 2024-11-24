@@ -106,6 +106,7 @@ function ListVehicles() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(formData),
+                credentials: 'include',
             });
             if (response.ok) {
                 // Update local state
@@ -133,6 +134,7 @@ function ListVehicles() {
         try{
             const response = await fetch(`/api/vehiculos/${vehiculoId}`,{
                 method:'DELETE',
+                credentials: 'include',
             });
             if(response.ok){
                 swal({icon:'success', title:'Vehiculo editado con exito'}).then(()=>{

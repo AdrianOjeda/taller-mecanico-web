@@ -80,6 +80,7 @@ function ListUsers() {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(formData),
+            credentials: 'include',
         }); //edit user information endpoint
 
         if(!response.ok){
@@ -112,6 +113,7 @@ function ListUsers() {
         console.log(`Eliminando usuario con ID: ${userId}`);
         const response = await fetch(`/api/users/delete/${userId}`,{
             method: 'DELETE',
+            credentials: 'include',
         }); //Delete endpoint 
 
         if(response.ok){

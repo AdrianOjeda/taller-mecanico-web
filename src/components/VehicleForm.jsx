@@ -65,6 +65,7 @@ const handleSubmit = async (e) => {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(adjustedFormData),
+            credentials: 'include',
         });
 
         if (response.ok) {

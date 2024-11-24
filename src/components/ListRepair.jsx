@@ -101,6 +101,7 @@ function ListRepair() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(formData),
+                credentials: 'include',
             });
 
             if (response.ok) {
@@ -124,6 +125,7 @@ function ListRepair() {
         try {
             const response = await fetch(`/api/reparaciones/${idReparacion}`, {
                 method: 'DELETE',
+                credentials: 'include',
             });
 
             if (response.ok) {
