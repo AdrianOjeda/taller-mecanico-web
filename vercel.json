@@ -4,13 +4,6 @@
         "source": "/api/:path*",
         "destination": "https://taller-backend-prod-production.up.railway.app/taller-app/:path*"
       }
-    ],
-    "redirects": [
-      {
-        "source": "/",
-        "destination": "/index.html",
-        "statusCode": 200
-      }
     ]
   }
   
