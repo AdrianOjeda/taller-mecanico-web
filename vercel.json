@@ -2,7 +2,7 @@
     "rewrites": [
       {
         "source": "/api/:path*",
-        "destination": "https://new-backend-repo-production.up.railway.app/taller-app/:path*"
+        "destination": "https://new-backend-repo-production-75ac.up.railway.app/taller-app/:path*"
       },
       {
         "source": "/:path*",
